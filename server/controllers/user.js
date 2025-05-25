@@ -60,16 +60,15 @@ export const loginUser = async (req, res) => {
     if (!user || !decryptPassword)
       return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, username: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, username: user.email }, process.env.JWT_SECRET);
     res.status(200).json({
       token,
       user: {
         name: user.name,
         email: user.email,
         profilePicture: user.profilePicture,
-        coins: user.coins,
-        xp: user.xp,
-        leve: user.level
+        role: user.role,
+        xp: user.xp
       }
     });
   } catch (error) {

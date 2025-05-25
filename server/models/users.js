@@ -7,7 +7,8 @@ const Userschema = new mongoose.Schema({
     phone: { type: Number, required: true },
     password: { type: String, required: true },
     profilePicture: { type: String, default: "" },
-    joinedAt: { type: Date, default: Date.now },    
+    joinedAt: { type: Date, default: Date.now },  
+    role: { type: String, default: "user"},  
     // 🔥 NEW FIELDS
     coins: { type: Number, default: 0 },
     xp: { type: Number, default: 0 },
