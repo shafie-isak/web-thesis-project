@@ -12,7 +12,7 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState('Dashboard');
 
   return (
-    <div className={`h-100 rounded-xl bg-white/10 backdrop-blur-sm border border-white/25 text-white ${expanded ? 'w-64' : 'w-20'} duration-300 p-4 flex flex-col`}>
+    <div className={`h-[97.5vh] rounded-xl bg-white/10 backdrop-blur-sm border border-white/25 text-white ${expanded ? 'w-64' : 'w-20'} duration-300 p-4 flex flex-col`}>
       <>
         <div className="flex justify-between items-center mb-8">
         {expanded && (
