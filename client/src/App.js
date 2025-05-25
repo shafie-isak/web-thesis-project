@@ -1,9 +1,11 @@
 import React from 'react';
 import Login from './pages/login-page';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
-    <Login/>
+    <Dashboard />
+    // <Login/>
   );
 }
 
