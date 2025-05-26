@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getUsers, deleteUser, banUser } from "../utils/api";
-import { FaEdit, FaTrash, FaUserLock, FaCrown, FaUser } from "react-icons/fa";
+import { FaEdit, FaTrash, FaUserLock, FaCrown, FaUser, FaPlus, FaFileExport } from "react-icons/fa";
 import { motion } from "framer-motion";
 import EditUserModal from "./EditUserModel";
 import AddUserModal from "./AddUserModal";
@@ -13,6 +13,12 @@ const AdminUsers = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('');
+    const [filterRole, setFilterRole] = useState('');
+    const [filterStatus, setFilterStatus] = useState('');
+
 
 
 
@@ -27,6 +33,81 @@ const AdminUsers = () => {
             setLoading(false);
         }
     };
+
+    const filteredUsers = users
+        .filter((user) =>
+            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            String(user.phone || '').toLowerCase().includes(searchTerm.toLowerCase())
+        )
+        .filter((user) => (filterRole ? user.role === filterRole : true))
+        .filter((user) => (filterStatus ? user.status === filterStatus : true))
+        .sort((a, b) => {
+            if (!sortBy) return 0;
+            if (sortBy === 'name') return a.name.localeCompare(b.name);
+            if (sortBy === 'email') return a.email.localeCompare(b.email);
+            if (sortBy === 'coins') return b.coins - a.coins;
+            if (sortBy === 'xp') return b.xp - a.xp;
+            if (sortBy === 'level') return b.level - a.level;
+            return 0;
+        });
+
+    // const exportToCSV = () => {
+    //     const headers = ['Name', 'Email', 'Phone', 'Coins', 'XP', 'Level', 'Status', 'Role', 'Joined'];
+    //     const rows = users.map(user => [
+    //         user.name,
+    //         user.email,
+    //         user.phone || 'N/A',
+    //         user.coins,
+    //         user.xp,
+    //         user.level,
+    //         user.status,
+    //         user.role,
+    //         new Date(user.createdAt).toLocaleDateString()
+    //     ]);
+
+    //     const csvContent =
+    //         'data:text/csv;charset=utf-8,' +
+    //         [headers, ...rows].map(e => e.join(',')).join('\n');
+
+    //     const encodedUri = encodeURI(csvContent);
+    //     const link = document.createElement('a');
+    //     link.setAttribute('href', encodedUri);
+    //     link.setAttribute('download', 'users.csv');
+    //     document.body.appendChild(link); // Required for Firefox
+    //     link.click();
+    //     document.body.removeChild(link);
+    // };
+
+    const exportToCSV = () => {
+  const headers = ['Name', 'Email', 'Phone', 'Coins', 'XP', 'Level', 'Status', 'Role', 'Joined'];
+  const rows = filteredUsers.map(user => [
+    user.name,
+    user.email,
+    user.phone || 'N/A',
+    user.coins,
+    user.xp,
+    user.level,
+    user.status,
+    user.role,
+    new Date(user.createdAt).toLocaleDateString()
+  ]);
+
+  const csvContent =
+    'data:text/csv;charset=utf-8,' +
+    [headers, ...rows].map(row => row.join(',')).join('\n');
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement('a');
+  link.setAttribute('href', encodedUri);
+  link.setAttribute('download', 'filtered_users.csv');
+  document.body.appendChild(link); // For Firefox
+  link.click();
+  document.body.removeChild(link);
+};
+
+
+
 
     useEffect(() => {
         fetchUsers();
@@ -77,17 +158,64 @@ const AdminUsers = () => {
     };
 
     return (
-        <div className="px-6 max-w-7xl">
-            <div className="flex justify-between items-center mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold text-white">Users</h1>
-                    <p className="text-sm text-gray-300">
-                        {users.length} {users.length === 1 ? 'user' : 'users'} registered
-                    </p>
+        <div className="px-6 ]]overflow-y-auto  relative h-[87vh] ml-2 rounded-xl overflow-hidden">
+            <div>
+                <h1 className="text-3xl font-bold text-white">Users</h1>
+                <p className="text-sm text-gray-300">
+                    {users.length} {users.length === 1 ? 'user' : 'users'} registered
+                </p>
+            </div>
+            <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-wrap gap-4 mt-4">
+                    <input
+                        type="text"
+                        placeholder="Search by name, email, or phone"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-white backdrop-blur-md focus:outline-none focus:border-white/50"
+                    />
+
+                    <select
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-white backdrop-blur-md focus:outline-none focus:border-white/50"
+                    >
+                        <option className="text-black/30" value="">Sort by</option>
+                        <option className="text-black/70" value="name">Name</option>
+                        <option className="text-black/70" value="email">Email</option>
+                        <option className="text-black/70" value="coins">Coins</option>
+                        <option className="text-black/70" value="xp">XP</option>
+                        <option className="text-black/70" value="level">Level</option>
+                    </select>
+
+                    <select
+                        value={filterRole}
+                        onChange={(e) => setFilterRole(e.target.value)}
+                        className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-white backdrop-blur-md focus:outline-none focus:border-white/50"
+                    >
+                        <option className="text-black/30" value="">Filter Role</option>
+                        <option className="text-black/70" value="admin">Admin</option>
+                        <option className="text-black/70" value="user">User</option>
+                    </select>
+
+                    <select
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                        className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-white backdrop-blur-md focus:outline-none focus:border-white/50"
+                    >
+                        <option className="text-black/30" value="">Filter Status</option>
+                        <option className="text-black/70" value="active">Active</option>
+                        <option className="text-black/70" value="banned">Banned</option>
+                    </select>
                 </div>
-                <button onClick={() => setIsAddModalOpen(true)} className="bg-white/10 px-5 py-3 border border-white/30 text-white rounded-full">
-                    Add User
-                </button>
+                <div className="flex gap-4">
+                    <button onClick={() => setIsAddModalOpen(true)} className="bg-white/10 px-5 py-2 border flex gap-2 justify-between items-center border-white/30 text-white rounded-full">
+                        <FaPlus /> Add User
+                    </button>
+                    <button onClick={exportToCSV} className="bg-white/10 px-5 py-2 border flex gap-2 justify-between items-center border-white/30 text-white rounded-full">
+                        <FaFileExport /> Export CSV
+                    </button>
+                </div>
             </div>
 
             {loading ? (
@@ -101,7 +229,7 @@ const AdminUsers = () => {
                     transition={{ duration: 0.5 }}
                     className="bg-white/5 backdrop-blur-sm  rounded-2xl overflow-hidden border border-white/10 shadow-xl"
                 >
-                    <div className="mx-h[80vh] h-[73vh]  overflow-x-auto">
+                    <div className="mx-h[80vh] h-[69vh]  overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-gradient-to-r from-purple-700 to-indigo-800">
                                 <tr className="text-white font-medium">
@@ -110,7 +238,7 @@ const AdminUsers = () => {
                                     <th className="px-6 py-4 text-center">Progress</th>
                                     <th className="px-6 py-4 text-center">Status</th>
                                     <th className="px-6 py-4 text-centerf">Role</th>
-                                    <th className="px-6 py-4 text-right">Actions</th>
+                                    <th className="px-6 py-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <motion.tbody
@@ -119,7 +247,7 @@ const AdminUsers = () => {
                                 animate="show"
                                 className="divide-y divide-white/10"
                             >
-                                {users.map((user) => (
+                                {filteredUsers.map((user) => (
                                     <motion.tr
                                         key={user._id}
                                         variants={rowVariants}

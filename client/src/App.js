@@ -3,22 +3,31 @@ import { Routes, Route } from 'react-router-dom';
 import Login from './pages/login-page';
 import Dashboard from './pages/Dashboard';
 import Unauthorized from "./pages/Unauthorized";
-import ProtectedRoute from './utils/ProtectedRoute'
-
+import ProtectedRoute from './utils/ProtectedRoute';
+import DashboardLayout from './pages/DashboardLayout';
+import AdminUsers from './pages/AdminUsers';
+// import Subjects from './pages/Subjects';
+// import PastExams from './pages/PastExams';
+// import MockExams from './pages/MockExams';
+// import Challenges from './pages/Challenges';
 
 function App() {
   return (
-
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          {/* <Route path="subjects" element={<Subjects />} />
+          <Route path="past-exams" element={<PastExams />} />
+          <Route path="mock-exams" element={<MockExams />} />
+          <Route path="challenges" element={<Challenges />} /> */}
+        </Route>
       </Route>
-
     </Routes>
-
   );
 }
 
