@@ -8,6 +8,7 @@ import mockExamRoutes from './routes/mockExams.js';
 import challengeRoutes from './routes/challenges.js';
 import { scheduleDailyChallenge } from './cron/generate_daily.js';
 import pastExamRoutes from './routes/pastExams.js';
+import adminRoutes from './routes/admin.js';
 // import './cron/generateMockExams.js';
 import cors from 'cors';
 import fs from 'fs';
@@ -37,6 +38,7 @@ app.use('/api/mock', mockRoutes);
 app.use('/api/mock-exam', mockExamRoutes);
 app.use('/api/challenges', challengeRoutes);
 app.use('/api/past-exams', pastExamRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 

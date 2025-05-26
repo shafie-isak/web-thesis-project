@@ -6,10 +6,30 @@ import { IoBookOutline } from "react-icons/io5";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import { TbCertificate } from "react-icons/tb";
 import { GiSwordman } from "react-icons/gi";
+import Swal from 'sweetalert2';
 
 const Sidebar = () => {
     const [expanded, setExpanded] = useState(true);
     const [activeItem, setActiveItem] = useState('Dashboard');
+
+
+    const handleLogout = () => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will be logged out.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#7A4DDF',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, log me out'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            }
+        });
+    };
 
     return (
         <div className={`h-[97.5vh] rounded-xl bg-white/10 backdrop-blur-sm border border-white/25 text-white ${expanded ? 'w-64' : 'w-20'} duration-300 p-4 flex flex-col`}>
@@ -81,11 +101,7 @@ const Sidebar = () => {
 
             <button
                 className={`flex items-center justify-center bg-white gap-3 p-3 rounded-lg mt-auto text-[#7A4DDF] `}
-                onClick={() => {
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    window.location.href = '/login';
-                }}
+                onClick={handleLogout}
             >
                 <FiLogOut size={20} />
                 {expanded && 'Logout'}

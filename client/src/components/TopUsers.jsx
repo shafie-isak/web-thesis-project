@@ -1,26 +1,39 @@
-import React from 'react';
-import TopUserCard from './TopUserCard';
-
-const mockUsers = [
-  { name: 'Bile Abdulkadir', coins: 3200, avatar: '/avatars/user1.jpg' },
-  { name: 'Shafie Abdi', coins: 3090, avatar: '/avatars/user2.jpg' },
-  { name: 'Abdulkadir Hussein', coins: 2842, avatar: '/avatars/user3.jpg' },
-  { name: 'Raxmo Mohamed', coins: 2590, avatar: '/avatars/user4.jpg' },
-  { name: 'Asma Abdulkadir', coins: 2467, avatar: '/avatars/user5.jpg' },
-];
+import React, { useEffect, useState } from "react";
+import { getTopUsers } from "../utils/api";
 
 const TopUsers = () => {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    getTopUsers().then(setUsers).catch(console.error);
+  }, []);
+
   return (
-    <div className="bg-white bg-opacity-10 p-5 rounded-2xl text-white w-full lg:w-[340px] shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Top users</h2>
-      {mockUsers.map((user, i) => (
-        <TopUserCard
-          key={i}
-          name={user.name}
-          coins={user.coins}
-          avatar={user.avatar}
-        />
-      ))}
+    <div className="p-4 rounded-lg bg-white/5 text-white">
+      <h3 className="text-lg font-semibold mb-4">Top users</h3>
+      <ul className="space-y-2">
+        {users.map((user, index) => (
+          <li
+            key={index}
+            className="flex items-center justify-between bg-white/10 px-4 py-2 rounded-lg"
+          >
+            <div className="flex items-center gap-2 w-52">
+              <img
+                src={user.profilePicture || "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?ga=GA1.1.692268007.1730776170&semt=ais_hybrid&w=740"}
+                alt="avatar"
+                className="w-8 h-8 rounded-full"
+              />
+              <div>
+                <p className="text-sm font-medium">{user.name}</p>
+                <p className="text-xs opacity-60">{user.coins} Coins</p>
+              </div>
+            </div>
+            <span className="text-xs bg-white/10 px-2 py-1 rounded">
+              {user.level}
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

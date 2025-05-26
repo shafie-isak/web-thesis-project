@@ -1,12 +1,15 @@
 import express from 'express';
-import { createUser, getUser, updateXP ,getWeeklyXPSummary, unlockBadge, loginUser, getCurrentUserProfile,requestPasswordReset, resetPassword, updateProfilePicture } from '../controllers/user.js';
+import { createUser,updateUserByAdmin,getUser, banUser, deleteUser, updateXP ,getWeeklyXPSummary, unlockBadge, loginUser, getCurrentUserProfile,requestPasswordReset, resetPassword, updateProfilePicture, getTopUsers } from '../controllers/user.js';
 import upload from '../middleware/upload.js';
-import authMiddleware from '../middleware/authMiddleware.js';
+import authMiddleware, { isAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 router.post('/add-user', createUser);
-router.get('/get-users', authMiddleware, getUser); // ✅ protected
+router.get('/all', authMiddleware, getUser);
+router.put('/:id/edit', authMiddleware, isAdmin, updateUserByAdmin);
+router.put('/:id/ban', authMiddleware, isAdmin, banUser);
+router.delete('/:id', authMiddleware, isAdmin, deleteUser);
 router.post('/update-xp',authMiddleware ,updateXP);
 router.get('/xp-summary/', authMiddleware, getWeeklyXPSummary);
 router.post('/unlock-badge', authMiddleware, unlockBadge);
@@ -15,5 +18,21 @@ router.get('/profile', authMiddleware, getCurrentUserProfile);
 router.put('/update-profile-picture', authMiddleware, upload.single('profilePicture'), updateProfilePicture); // ✅ protected
 router.post('/request-reset', requestPasswordReset);
 router.post('/reset-password/:token', resetPassword);
+router.get('/top', authMiddleware, isAdmin, getTopUsers);
+
+router.put('/:id/ban', authMiddleware, isAdmin, async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { status: 'banned' },
+      { new: true }
+    );
+    res.status(200).json({ success: true, message: "User banned", user });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to ban user" });
+  }
+});
+
+
 
 export default router;

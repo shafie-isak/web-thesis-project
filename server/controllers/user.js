@@ -50,6 +50,69 @@ export const createUser = async (req, res) => {
 
 };
 
+export const updateUserByAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, phone, role, banned } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (role) user.role = role;
+    user.status = banned;
+
+    await user.save();
+    res.status(200).json({ success: true, message: "User updated", user });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const banUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { status: "banned" },
+      { new: true }
+    );
+
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ message: "User banned", user });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to ban user" });
+  }
+};
+
+
+export const deleteUser = async (req, res) => {
+  try {
+    const deleted = await User.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "User not found" });
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+};
+
+export const getTopUsers = async (req, res) => {
+  try {
+    const users = await User.find()
+      .sort({ coins: -1 }) // or 'xp' if preferred
+      .limit(5)
+      .select("name email profilePicture coins xp level"); // customize fields
+
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch top users." });
+  }
+};
+
+
 
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -60,7 +123,7 @@ export const loginUser = async (req, res) => {
     if (!user || !decryptPassword)
       return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, username: user.email }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id, username: user.email, role: user.role, }, process.env.JWT_SECRET);
     res.status(200).json({
       token,
       user: {

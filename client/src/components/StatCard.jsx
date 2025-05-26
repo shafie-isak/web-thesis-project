@@ -1,6 +1,6 @@
 import React from 'react';
 import { FiUsers, FiBookOpen, FiBookmark, FiFileText, FiClock, FiAward } from 'react-icons/fi';
-
+import CountUp from 'react-countup';
 const iconMap = {
   users: <FiUsers size={28} />,
   subjects: <FiBookOpen size={28} />,
@@ -19,12 +19,15 @@ const bgColorMap = {
   challenges: 'bg-yellow-400',
 };
 
-const StatCard = ({ type, label, value }) => {
+const StatCard = ({ type, label, count }) => {
   return (
     <div className={`flex justify-between items-center ${bgColorMap[type]} text-white px-6 py-4 rounded-xl shadow-md`}>
       <div>
         <p className="text-sm opacity-90">{label}</p>
-        <h2 className="text-2xl font-bold mt-1">+{value}</h2>
+        {/* <h2 className="text-2xl font-bold mt-1">+{count}</h2> */}
+        <h2 className="text-2xl font-bold mt-1">
+        +<CountUp end={count} duration={1.5} />
+      </h2>
       </div>
       <div className="opacity-80">{iconMap[type]}</div>
     </div>
