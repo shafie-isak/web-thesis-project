@@ -53,23 +53,34 @@ export const createUser = async (req, res) => {
 export const updateUserByAdmin = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, phone, role, banned } = req.body;
+    const { name, email, phone, role, status } = req.body;
 
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    // ✅ Check for duplicate email (by another user)
+    const emailExists = await User.findOne({ email, _id: { $ne: id } });
+    if (emailExists) return res.status(409).json({ message: "Email already exists" });
+
+    // ✅ Check for duplicate phone (by another user)
+    const phoneExists = await User.findOne({ phone, _id: { $ne: id } });
+    if (phoneExists) return res.status(410).json({ message: "Phone number already exists" });
+
+    // ✅ Apply updates
     if (name) user.name = name;
     if (email) user.email = email;
     if (phone) user.phone = phone;
     if (role) user.role = role;
-    user.status = banned;
+    if (status) user.status = status;
 
     await user.save();
     res.status(200).json({ success: true, message: "User updated", user });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 export const banUser = async (req, res) => {
   try {

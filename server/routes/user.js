@@ -3,6 +3,7 @@ import { createUser,updateUserByAdmin,getUser, banUser, deleteUser, updateXP ,ge
 import upload from '../middleware/upload.js';
 import authMiddleware, { isAdmin } from '../middleware/authMiddleware.js';
 
+
 const router = express.Router();
 
 router.post('/add-user', createUser);

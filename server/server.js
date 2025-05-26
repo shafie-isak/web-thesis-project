@@ -9,6 +9,7 @@ import challengeRoutes from './routes/challenges.js';
 import { scheduleDailyChallenge } from './cron/generate_daily.js';
 import pastExamRoutes from './routes/pastExams.js';
 import adminRoutes from './routes/admin.js';
+
 // import './cron/generateMockExams.js';
 import cors from 'cors';
 import fs from 'fs';

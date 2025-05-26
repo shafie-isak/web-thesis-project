@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const EditUserModal = ({ user, onClose, onUpdated }) => {
-  const [formData, setFormData] = useState({ ...user });
-  const [saving, setSaving] = useState(false);
+const AddUserModal = ({ onClose, onAdded }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    role: 'user',
+    status: 'active',
+  });
+
   const [errors, setErrors] = useState({});
-  const token = localStorage.getItem("token");
+  const [saving, setSaving] = useState(false);
+  const token = localStorage.getItem('token');
 
   const validate = () => {
     const newErrors = {};
@@ -15,73 +23,86 @@ const EditUserModal = ({ user, onClose, onUpdated }) => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Invalid email format';
     }
-    if (!formData.phone.toString().trim()) {
+
+    if (!formData.phone.trim()) {
       newErrors.phone = 'Phone is required';
     } else if (!/^\d+$/.test(formData.phone)) {
       newErrors.phone = 'Phone must be numeric';
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSave = async () => {
+  const handleSubmit = async () => {
     if (!validate()) return;
 
     setSaving(true);
-    setErrors({});
     try {
-      const response = await axios.put(
-        `http://localhost:5000/api/users/${user._id}/edit`,
+      const response = await axios.post(
+        'http://localhost:5000/api/users/add-user',
         formData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
       );
       if (response.data.success) {
-        onUpdated(response.data.user);
+        onAdded();
         onClose();
       }
     } catch (err) {
-      const status = err.response?.status;
-      if (status === 409) {
-        setErrors((prev) => ({ ...prev, email: "Email already exists" }));
-      } else if (status === 410) {
-        setErrors((prev) => ({ ...prev, phone: "Phone number already exists" }));
-      } else {
-        console.error("❌ Update failed:", err.message);
-      }
+      console.error('❌ Failed to add user:', err.response?.data?.message || err.message);
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded shadow-xl w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Edit User</h2>
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg w-full max-w-md">
+        <h2 className="text-xl font-bold mb-4">Add New User</h2>
 
         <input
           className="border w-full p-2 mb-1"
+          placeholder="Name"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Name"
         />
-        {errors.name && <p className="text-red-500 text-sm mb-2">{errors.name}</p>}
+        {errors.name && <p className="text-sm text-red-500 mb-2">{errors.name}</p>}
 
         <input
           className="border w-full p-2 mb-1"
+          placeholder="Email"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          placeholder="Email"
         />
-        {errors.email && <p className="text-red-500 text-sm mb-2">{errors.email}</p>}
+        {errors.email && <p className="text-sm text-red-500 mb-2">{errors.email}</p>}
 
         <input
           className="border w-full p-2 mb-1"
+          placeholder="Phone"
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          placeholder="Phone"
         />
-        {errors.phone && <p className="text-red-500 text-sm mb-2">{errors.phone}</p>}
+        {errors.phone && <p className="text-sm text-red-500 mb-2">{errors.phone}</p>}
+
+        <input
+          className="border w-full p-2 mb-1"
+          placeholder="Password"
+          type="password"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+        />
+        {errors.password && <p className="text-sm text-red-500 mb-2">{errors.password}</p>}
 
         <select
           className="border w-full p-2 mb-2"
@@ -102,13 +123,15 @@ const EditUserModal = ({ user, onClose, onUpdated }) => {
         </select>
 
         <div className="flex justify-end gap-2">
-          <button className="text-sm text-gray-500" onClick={onClose}>Cancel</button>
+          <button className="text-gray-500" onClick={onClose}>
+            Cancel
+          </button>
           <button
-            onClick={handleSave}
             className="bg-purple-600 text-white px-4 py-2 rounded"
+            onClick={handleSubmit}
             disabled={saving}
           >
-            {saving ? "Saving..." : "Save"}
+            {saving ? 'Saving...' : 'Add User'}
           </button>
         </div>
       </div>
@@ -116,4 +139,4 @@ const EditUserModal = ({ user, onClose, onUpdated }) => {
   );
 };
 
-export default EditUserModal;
+export default AddUserModal;
