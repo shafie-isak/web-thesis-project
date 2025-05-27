@@ -1,12 +1,17 @@
 import axios from 'axios'
-const API_URL = "http://localhost:5000";
+const API_BASE = "http://localhost:5000/api";
 const token = localStorage.getItem("token");
 const headers = {
   Authorization: `Bearer ${token}`
 };
 
+const getAuthHeaders = () => ({
+  Authorization: `Bearer ${localStorage.getItem("token")}`
+});
+
+
 export const loginUser = async (email, password) => {
-  const res = await fetch(`${API_URL}/api/users/login`, {
+  const res = await fetch(`${API_BASE}/users/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -21,7 +26,7 @@ export const loginUser = async (email, password) => {
 };
 
 export const fetchDashboardData = async (token) => {
-  const res = await fetch(`${API_URL}/api/admin/dashboard-summary`, {
+  const res = await fetch(`${API_BASE}/admin/dashboard-summary`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -32,7 +37,7 @@ export const fetchDashboardData = async (token) => {
 
 export const getTopUsers = async () => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/api/users/top`, {
+  const res = await fetch(`${API_BASE}/users/top`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Failed to fetch top users");
@@ -40,7 +45,7 @@ export const getTopUsers = async () => {
 };
 
 export const getUsers = async () => {
-  const res = await fetch(`${API_URL}/api/users/all`, {
+  const res = await fetch(`${API_BASE}/users/all`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -49,6 +54,70 @@ export const getUsers = async () => {
   return data;
 };
 
-export const updateUser = (id, data) => axios.put(`${API_URL}/api/users/${id}`, data, { headers });
-export const deleteUser = (id) => axios.delete(`${API_URL}/api/users/${id}`, { headers });
-export const banUser = (id) => axios.put(`${API_URL}/api/users/${id}/ban`, {}, { headers });
+export const updateUser = (id, data) => axios.put(`${API_BASE}/users/${id}`, data, { headers });
+export const deleteUser = (id) => axios.delete(`${API_BASE}/users/${id}`, { headers });
+export const banUser = (id) => axios.put(`${API_BASE}/users/${id}/ban`, {}, { headers });
+
+
+
+
+//Chapters API calls Starts hee
+
+//Get All Chapters
+export const fetchChapters = async () => {
+  const res = await axios.get(`${API_BASE}/chapters`, { headers: headers });
+  return res.data.chapters;
+};
+
+////Get All Subjects
+export const fetchSubjects = async () => {
+  const res = await axios.get(`${API_BASE}/subjects`, { headers: headers });
+  return res.data.subjects;
+};
+
+//Add Chapter
+export const createChapter = async (data) => {
+  const res = await axios.post(`${API_BASE}/chapters`, data, { headers: headers });
+  return res.data;
+};
+
+//Update Chapter
+export const updateChapter = async (id, data) => {
+  const res = await axios.put(`${API_BASE}/chapters/${id}`, data, { headers: headers });
+  return res.data;
+};
+
+//Delete Chapter
+export const deleteChapter = async (id) => {
+  const res = await axios.delete(`${API_BASE}/chapters/${id}`, { headers: headers });
+  return res.data;
+};
+
+
+
+//Questions API calls Starts hee
+
+//Get all Questions
+export const fetchQuestions = async () => {
+  const res = await axios.get(`${API_BASE}/questions`, { headers: getAuthHeaders() });
+  return res.data.questions;
+};
+
+//Add question
+export const createQuestion = async (data) => {
+  const res = await axios.post(`${API_BASE}/questions`, data, { headers: getAuthHeaders() });
+  return res.data;
+};
+
+//Update question
+export const updateQuestion = async (id, data) => {
+  const res = await axios.put(`${API_BASE}/questions/${id}`, data, { headers: getAuthHeaders() });
+  return res.data;
+};
+
+//Delete question
+export const deleteQuestion = async (id) => {
+  const res = await axios.delete(`${API_BASE}/questions/${id}`, { headers: getAuthHeaders() });
+  return res.data;
+};
+

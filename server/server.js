@@ -2,6 +2,9 @@ import dotenv from 'dotenv';
 import express from 'express';
 import connectDB from './config/database.js';
 import userRoutes from './routes/user.js';
+import subjectsRoutes from './routes/subjects.js';
+import chapterRoutes from "./routes/chapters.js";
+import questionRoutes from "./routes/questions.js";
 import quizRoutes from './routes/quiz.js';
 import mockRoutes from './routes/mock.js';
 import mockExamRoutes from './routes/mockExams.js';
@@ -34,6 +37,9 @@ scheduleDailyChallenge();
 // ✅ Register routes
 
 app.use('/api/users', userRoutes);
+app.use('/api/subjects', subjectsRoutes);
+app.use("/api/chapters", chapterRoutes);
+app.use("/api/questions", questionRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/mock', mockRoutes);
 app.use('/api/mock-exam', mockExamRoutes);

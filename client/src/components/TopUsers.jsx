@@ -19,7 +19,7 @@ const TopUsers = () => {
           >
             <div className="flex items-center gap-2 w-52">
               <img
-                src={user.profilePicture || "https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?ga=GA1.1.692268007.1730776170&semt=ais_hybrid&w=740"}
+                src={user.profilePicture || "/avater.png"}
                 alt="avatar"
                 className="w-8 h-8 rounded-full"
               />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getUsers, deleteUser, banUser } from "../utils/api";
-import { FaEdit, FaTrash, FaUserLock, FaCrown, FaUser, FaPlus, FaFileExport } from "react-icons/fa";
+import { FaEdit, FaTrash, FaUserLock, FaCrown, FaUser, FaPlus, FaFileExport, FaSearch,} from "react-icons/fa";
 import { motion } from "framer-motion";
 import EditUserModal from "./EditUserModel";
 import AddUserModal from "./AddUserModal";
@@ -33,6 +33,8 @@ const AdminUsers = () => {
             setLoading(false);
         }
     };
+
+    
 
     const filteredUsers = users
         .filter((user) =>
@@ -80,31 +82,38 @@ const AdminUsers = () => {
     // };
 
     const exportToCSV = () => {
-  const headers = ['Name', 'Email', 'Phone', 'Coins', 'XP', 'Level', 'Status', 'Role', 'Joined'];
-  const rows = filteredUsers.map(user => [
-    user.name,
-    user.email,
-    user.phone || 'N/A',
-    user.coins,
-    user.xp,
-    user.level,
-    user.status,
-    user.role,
-    new Date(user.createdAt).toLocaleDateString()
-  ]);
+        const headers = ['Name', 'Email', 'Phone', 'Coins', 'XP', 'Level', 'Status', 'Role', 'Joined'];
+        const rows = filteredUsers.map(user => [
+            user.name,
+            user.email,
+            user.phone || 'N/A',
+            user.coins,
+            user.xp,
+            user.level,
+            user.status,
+            user.role,
+            new Date(user.createdAt).toLocaleDateString()
+        ]);
 
-  const csvContent =
-    'data:text/csv;charset=utf-8,' +
-    [headers, ...rows].map(row => row.join(',')).join('\n');
+        const csvContent =
+            'data:text/csv;charset=utf-8,' +
+            [headers, ...rows].map(row => row.join(',')).join('\n');
 
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement('a');
-  link.setAttribute('href', encodedUri);
-  link.setAttribute('download', 'filtered_users.csv');
-  document.body.appendChild(link); // For Firefox
-  link.click();
-  document.body.removeChild(link);
-};
+        const encodedUri = encodeURI(csvContent);
+
+        const now = new Date();
+        const yyyy = now.getFullYear();
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const filename = `users_${yyyy}_${mm}_${dd}.csv`;
+
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
 
 
@@ -166,14 +175,16 @@ const AdminUsers = () => {
                 </p>
             </div>
             <div className="flex justify-between items-center mb-6">
-                <div className="flex flex-wrap gap-4 mt-4">
-                    <input
-                        type="text"
-                        placeholder="Search by name, email, or phone"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="px-4 py-2 rounded-full border border-white/20 bg-white/5 text-white backdrop-blur-md focus:outline-none focus:border-white/50"
-                    />
+                <div className="flex flex-wrap flex-1 gap-4 mt-4">
+                    <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 w-full max-w-sm">
+                        <FaSearch className="text-gray-400 mr-2" />
+                        <input  
+                            type="text"
+                            placeholder="Search by name, email or phone"
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-transparent focus:outline-none text-sm placeholder-gray-400 w-full"
+                        />
+                    </div>
 
                     <select
                         value={sortBy}

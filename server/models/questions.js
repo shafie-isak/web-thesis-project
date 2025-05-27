@@ -10,3 +10,4 @@ const QuestionSchema = new mongoose.Schema({
 
 const Question = mongoose.model('Question', QuestionSchema, 'questions');
 export default Question;
+

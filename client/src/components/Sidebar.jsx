@@ -4,14 +4,15 @@ import {
   FiUsers, FiLogOut,
 } from 'react-icons/fi';
 import {
-  MdOutlineDashboard,
+  MdOutlineDashboard, MdOutlineBookmarks, MdOutlineQuiz
 } from 'react-icons/md';
 import {
   LuPanelLeftClose, LuPanelRightClose,
 } from 'react-icons/lu';
 import {
-  IoBookOutline,
+  IoBookOutline, IoBookmark
 } from 'react-icons/io5';
+
 import {
   HiOutlineClipboardDocumentList,
 } from 'react-icons/hi2';
@@ -31,6 +32,8 @@ const Sidebar = () => {
     { label: 'Dashboard', icon: <MdOutlineDashboard size={20} />, path: '/dashboard' },
     { label: 'Users', icon: <FiUsers size={20} />, path: '/dashboard/users' },
     { label: 'Subjects', icon: <IoBookOutline size={20} />, path: '/dashboard/subjects' },
+    { label: 'chapters', icon: <MdOutlineBookmarks size={20} />, path: '/dashboard/chapters' },
+    { label: 'questions', icon: <MdOutlineQuiz size={20} />, path: '/dashboard/questions' },
     { label: 'Past Federal Exams', icon: <HiOutlineClipboardDocumentList size={20} />, path: '/dashboard/past-exams' },
     { label: 'Mock Exams', icon: <TbCertificate size={20} />, path: '/dashboard/mock-exams' },
     { label: 'Challenges', icon: <GiSwordman size={20} />, path: '/dashboard/challenges' },

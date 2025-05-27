@@ -3,7 +3,6 @@ import {
   addQuiz,
   getChapters,
   getQuestions,
-  getSubjects,
   getUserQuiz,
   saveQuizPreview,
   getSavedQuizzes,
@@ -12,13 +11,12 @@ import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/add-quiz', authMiddleware, addQuiz); // ✅ protected
-router.get('/get-quiz/:userId', authMiddleware, getUserQuiz); // ✅ protected
-router.get('/get-questions', getQuestions); // ❌ public
-router.get('/get-chapters/:subject_id', getChapters); // ❌ public
-router.get('/get-subjects', getSubjects); // ❌ public
-router.post('/save-quiz-preview', authMiddleware, saveQuizPreview); // ✅ protected
-router.get('/get-saved-quizzes/', authMiddleware, getSavedQuizzes); // ✅ protected
+router.post('/add-quiz', authMiddleware, addQuiz);
+router.get('/get-quiz/:userId', authMiddleware, getUserQuiz);
+router.get('/get-questions', getQuestions);
+router.get('/get-chapters/:subject_id', getChapters);
+router.post('/save-quiz-preview', authMiddleware, saveQuizPreview);
+router.get('/get-saved-quizzes/', authMiddleware, getSavedQuizzes);
 
 
 export default router;

@@ -68,15 +68,6 @@ export const getUserQuiz = async (req, res) => {
 
 }
 
-export const getSubjects = async (req, res) => {
-    try {
-        const subjects = await Subject.find({});
-        res.status(200).json({ subjects });
-    } catch (error) {
-        console.log("error getting subjects: ", error.message);
-        return res.status(401).json({ message: error.message });
-    }
-}
 
 export const getChapters = async (req, res) => {
     const { subject_id } = req.params;
