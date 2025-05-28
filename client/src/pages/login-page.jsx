@@ -60,7 +60,7 @@ const Login = () => {
           <a href="#" className="hover:underline">Forget Password</a>
         </div>
 
-        <button  type="submit" className="w-full bg-white text-[#7A4DDF] font-semibold py-3 rounded-full hover:bg-gray-100 transition">
+        <button  type="submit" disabled={loading} className="w-full bg-white text-[#7A4DDF] font-semibold py-3 rounded-full hover:bg-gray-100 transition">
           {loading ? "Logging in..." : "LOGIN IN"}
         </button>
         </form>

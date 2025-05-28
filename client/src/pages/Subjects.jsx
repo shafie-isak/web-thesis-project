@@ -11,6 +11,7 @@ import {
     FaFileExport,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
+import Swal from 'sweetalert2';
 
 
 
@@ -21,6 +22,8 @@ const Subjects = () => {
     const [currentSubject, setCurrentSubject] = useState(null);
     const [sortOrder, setSortOrder] = useState("asc");
     const [formData, setFormData] = useState({ subject_name: "", icon: "" });
+    const [saveLoading, setSaveLoading] = useState(false);
+
 
     const token = localStorage.getItem("token");
     const headers = { Authorization: `Bearer ${token}` };
@@ -65,26 +68,40 @@ const Subjects = () => {
     };
 
     const handleSave = async () => {
-        try {
-            if (!formData.subject_name || !formData.icon) {
-                toast.warning("Please provide both name and icon.");
-                return;
-            }
+        if (!formData.subject_name || !formData.icon) {
+            toast.warning("Please provide both name and icon.");
+            return;
+        }
 
+        setSaveLoading(true); // start loading
+
+        try {
             if (currentSubject) {
                 await axios.put(
                     `http://localhost:5000/api/subjects/${currentSubject._id}`,
                     formData,
                     { headers }
                 );
-                toast.success("Subject updated successfully");
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Subject updated successfully",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
                 const res = await axios.post(
                     `http://localhost:5000/api/subjects`,
                     formData,
                     { headers }
                 );
-                toast.success("Subject created successfully");
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Subject created successfully",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
 
             fetchSubjects();
@@ -95,26 +112,62 @@ const Subjects = () => {
             } else {
                 toast.error("❌ Save failed: " + err.message);
             }
+        } finally {
+            setSaveLoading(false); // stop loading
         }
     };
+
+
 
 
     const handleDelete = async (id) => {
-        if (!window.confirm("Are you sure you want to delete this subject?")) return;
-        try {
-            const res = await axios.delete(`http://localhost:5000/api/subjects/${id}`, {
-                headers,
-            });
-            toast.success(res.data.message || "Deleted successfully");
-            fetchSubjects();
-        } catch (err) {
-            if (err.response?.status === 400) {
-                toast.error("Subject is referenced by another entity.");
-            } else {
-                toast.error("Delete failed: " + err.message);   
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This action will delete the subject permanently.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#7A4DDF',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // Show loading indicator
+                Swal.fire({
+                    title: 'Deleting...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                });
+
+                try {
+                    const res = await axios.delete(`http://localhost:5000/api/subjects/${id}`, {
+                        headers,
+                    });
+
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: 'The subject has been successfully deleted.',
+                        timer: 1500,
+                        showConfirmButton: false,
+                        timerProgressBar: true
+                    });
+                    fetchSubjects();
+                } catch (err) {
+                    Swal.close(); 
+                    if (err.response?.status === 400) {
+                        toast.error("Subject is referenced by another entity.");
+                    } else {
+                        toast.error("Delete failed: " + err.message);
+                    }
+                }
             }
-        }
+        });
     };
+
 
 
     const handleImageChange = (e) => {
@@ -304,10 +357,12 @@ const Subjects = () => {
                         <div className="mt-6 flex justify-end">
                             <button
                                 onClick={handleSave}
-                                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition"
+                                disabled={saveLoading}
+                                className={`px-4 py-2 rounded-md text-white transition ${saveLoading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'}`}
                             >
-                                {currentSubject ? "Update" : "Create"}
+                                {saveLoading ? (currentSubject ? "Updating..." : "Creating...") : (currentSubject ? "Update" : "Create")}
                             </button>
+
                         </div>
                     </motion.div>
                 </div>

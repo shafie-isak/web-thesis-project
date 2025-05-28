@@ -19,6 +19,7 @@ import {
     updateChapter,
     deleteChapter,
 } from "../utils/api";
+import Swal from 'sweetalert2';
 
 const Chapters = () => {
     const [chapters, setChapters] = useState([]);
@@ -29,6 +30,8 @@ const Chapters = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [sortType, setSortType] = useState("number");
     const [sortOrder, setSortOrder] = useState("asc");
+    const [saveLoading, setSaveLoading] = useState(false);
+
 
 
     const [formData, setFormData] = useState({
@@ -84,20 +87,37 @@ const Chapters = () => {
             return;
         }
 
+        setSaveLoading(true); // start loading
+
         try {
             if (current) {
                 await updateChapter(current._id, formData);
-                toast.success("Chapter updated");
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Chapter updated successfully!",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             } else {
                 await createChapter(formData);
-                toast.success("Chapter created");
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Chapter created successfully!",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
             }
             loadChapters();
             setModalOpen(false);
         } catch {
             toast.error("Error saving chapter");
+        } finally {
+            setSaveLoading(false); // stop loading
         }
     };
+
 
     const handleDelete = async (id) => {
         if (!window.confirm("Delete this chapter?")) return;
@@ -326,10 +346,12 @@ const Chapters = () => {
                         <div className="mt-4 text-right">
                             <button
                                 onClick={handleSave}
-                                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+                                disabled={saveLoading}
+                                className={`px-4 py-2 rounded text-white transition ${saveLoading ? 'bg-purple-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700'}`}
                             >
-                                Save
+                                {saveLoading ? (current ? "Updating..." : "Creating...") : (current ? "Update" : "Create")}
                             </button>
+
                         </div>
                     </motion.div>
                 </div>

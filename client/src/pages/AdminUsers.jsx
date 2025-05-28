@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { toast } from 'react-toastify';
 import { getUsers, deleteUser, banUser } from "../utils/api";
-import { FaEdit, FaTrash, FaUserLock, FaCrown, FaUser, FaPlus, FaFileExport, FaSearch,} from "react-icons/fa";
+import { FaEdit, FaTrash, FaUserLock, FaCrown, FaUser, FaPlus, FaFileExport, FaSearch, } from "react-icons/fa";
 import { motion } from "framer-motion";
 import EditUserModal from "./EditUserModel";
 import AddUserModal from "./AddUserModal";
-
+import Swal from "sweetalert2";
 
 
 const AdminUsers = () => {
@@ -34,7 +35,7 @@ const AdminUsers = () => {
         }
     };
 
-    
+
 
     const filteredUsers = users
         .filter((user) =>
@@ -129,23 +130,72 @@ const AdminUsers = () => {
 
 
     const handleDelete = async (userId) => {
-        if (window.confirm("Are you sure you want to delete this user?")) {
+        const currentUserId = JSON.parse(localStorage.getItem("user"))?.id;
+
+        if (userId === currentUserId) {
+            toast.error("❌ You cannot delete your own account.");
+            return;
+        }
+
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: "This user will be permanently deleted.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete user!',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Deleting...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             try {
                 await deleteUser(userId);
-                fetchUsers();
+                Swal.close();
+                await fetchUsers();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: 'User has been deleted successfully.',
+                    timer: 1500,
+                    showConfirmButton: false,
+                    timerProgressBar: true
+                });
             } catch (err) {
-                console.error("❌ Failed to delete user:", err);
+                Swal.close();
+                const message = err.response?.data?.message || "❌ Failed to delete user.";
+                toast.error(message);
             }
         }
     };
 
+
     const handleBan = async (userId) => {
+        const currentUserId = JSON.parse(localStorage.getItem("user"))?.id;
+
+        if (userId === currentUserId) {
+            toast.error("❌ You cannot ban yourself.");
+            return;
+        }
+
         if (window.confirm("Ban this user? They will no longer be able to log in.")) {
             try {
                 await banUser(userId);
+                toast.success("🚫 User banned successfully.");
                 fetchUsers();
             } catch (err) {
-                console.error("❌ Failed to ban user:", err);
+                const message = err.response?.data?.message || "❌ Failed to ban user.";
+                toast.error(message);
             }
         }
     };
@@ -178,7 +228,7 @@ const AdminUsers = () => {
                 <div className="flex flex-wrap flex-1 gap-4 mt-4">
                     <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 w-full max-w-sm">
                         <FaSearch className="text-gray-400 mr-2" />
-                        <input  
+                        <input
                             type="text"
                             placeholder="Search by name, email or phone"
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -329,15 +379,18 @@ const AdminUsers = () => {
                                                 >
                                                     <FaEdit />
                                                 </motion.button>
-                                                <motion.button
-                                                    whileHover={{ scale: 1.1 }}
-                                                    whileTap={{ scale: 0.95 }}
-                                                    onClick={() => handleDelete(user._id)}
-                                                    className="text-red-400 hover:text-red-300 bg-red-900/30 p-2 rounded-lg transition-colors"
-                                                    aria-label="Delete user"
-                                                >
-                                                    <FaTrash />
-                                                </motion.button>
+                                                {user._id !== JSON.parse(localStorage.getItem("user"))?.id && (
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.1 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        onClick={() => handleDelete(user._id)}
+                                                        className="text-red-400 hover:text-red-300 bg-red-900/30 p-2 rounded-lg transition-colors"
+                                                        aria-label="Delete user"
+                                                    >
+                                                        <FaTrash />
+                                                    </motion.button>
+                                                )}
+
                                                 <motion.button
                                                     whileHover={{ scale: 1.1 }}
                                                     whileTap={{ scale: 0.95 }}
@@ -365,17 +418,21 @@ const AdminUsers = () => {
                         setSelectedUser(null);
                     }}
                     onUpdated={(updatedUser) => {
+                        toast.success("✅ User updated successfully.");
                         setUsers((prev) =>
                             prev.map((u) => (u._id === updatedUser._id ? updatedUser : u))
                         );
                     }}
                 />
-            )}'
+            )}
 
             {isAddModalOpen && (
                 <AddUserModal
                     onClose={() => setIsAddModalOpen(false)}
-                    onAdded={fetchUsers}
+                    onAdded={() => {
+                        toast.success("✅ New user added.");
+                        fetchUsers();
+                    }}
                 />
             )}
 

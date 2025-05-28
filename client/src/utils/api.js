@@ -65,31 +65,31 @@ export const banUser = (id) => axios.put(`${API_BASE}/users/${id}/ban`, {}, { he
 
 //Get All Chapters
 export const fetchChapters = async () => {
-  const res = await axios.get(`${API_BASE}/chapters`, { headers: headers });
+  const res = await axios.get(`${API_BASE}/chapters`, { headers: getAuthHeaders() });
   return res.data.chapters;
 };
 
 ////Get All Subjects
 export const fetchSubjects = async () => {
-  const res = await axios.get(`${API_BASE}/subjects`, { headers: headers });
+  const res = await axios.get(`${API_BASE}/subjects`, { headers: getAuthHeaders() });
   return res.data.subjects;
 };
 
 //Add Chapter
 export const createChapter = async (data) => {
-  const res = await axios.post(`${API_BASE}/chapters`, data, { headers: headers });
+  const res = await axios.post(`${API_BASE}/chapters`, data, { headers: getAuthHeaders() });
   return res.data;
 };
 
 //Update Chapter
 export const updateChapter = async (id, data) => {
-  const res = await axios.put(`${API_BASE}/chapters/${id}`, data, { headers: headers });
+  const res = await axios.put(`${API_BASE}/chapters/${id}`, data, { headers: getAuthHeaders() });
   return res.data;
 };
 
 //Delete Chapter
 export const deleteChapter = async (id) => {
-  const res = await axios.delete(`${API_BASE}/chapters/${id}`, { headers: headers });
+  const res = await axios.delete(`${API_BASE}/chapters/${id}`, { headers: getAuthHeaders() });
   return res.data;
 };
 

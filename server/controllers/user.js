@@ -101,6 +101,11 @@ export const banUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
+    // Prevent user from deleting themselves
+    if (req.user.id === req.params.id) {
+      return res.status(403).json({ message: "You cannot delete yourself." });
+    }
+
     const deleted = await User.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "User not found" });
 
@@ -109,6 +114,7 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: "Failed to delete user" });
   }
 };
+
 
 export const getTopUsers = async (req, res) => {
   try {
@@ -138,6 +144,7 @@ export const loginUser = async (req, res) => {
     res.status(200).json({
       token,
       user: {
+        _id: user._id,
         name: user.name,
         email: user.email,
         profilePicture: user.profilePicture,
@@ -145,6 +152,7 @@ export const loginUser = async (req, res) => {
         xp: user.xp
       }
     });
+
   } catch (error) {
     console.log("error: ", error.message);
     res.status(500).json({ message: "Server error" });
