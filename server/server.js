@@ -44,7 +44,7 @@ app.use('/api/quizzes', quizRoutes);
 app.use('/api/mock', mockRoutes);
 app.use('/api/mock-exam', mockExamRoutes);
 app.use('/api/challenges', challengeRoutes);
-app.use('/api/past-exams', pastExamRoutes);
+app.use('/api/pastexams', pastExamRoutes);
 app.use('/api/admin', adminRoutes);
 
 

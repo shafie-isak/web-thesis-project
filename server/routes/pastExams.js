@@ -1,24 +1,29 @@
 import express from 'express';
 import multer from 'multer';
-import path from 'path';
-import { uploadPastExam, getAllPastExams } from '../controllers/pastExams.js';
+import {
+  uploadPastExam,
+  getAllPastExams,
+  getPastExamById,
+  updatePastExam,
+  deletePastExam,
+} from '../controllers/pastExams.js';
 
 const router = express.Router();
 
-// Multer setup to preserve original filename
+// Multer setup
 const storage = multer.diskStorage({
   destination: 'uploads/past_exams',
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname); // .pdf
-    const name = `${Date.now()}-${file.originalname.replace(/\s+/g, '-')}`;
-    cb(null, name);
+    cb(null, Date.now() + '-' + file.originalname);
   },
 });
-
 const upload = multer({ storage });
 
 // Routes
-router.post('/upload', upload.single('pdf'), uploadPastExam);
+router.post('/', upload.single('pdf'), uploadPastExam);
 router.get('/', getAllPastExams);
+router.get('/:id', getPastExamById);
+router.put('/:id', upload.single('pdf'), updatePastExam);
+router.delete('/:id', deletePastExam);
 
 export default router;

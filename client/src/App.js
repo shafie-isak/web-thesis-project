@@ -11,7 +11,7 @@ import AdminUsers from './pages/AdminUsers';
 import Subjects from './pages/Subjects';
 import Chapters from './pages/Chapters';
 import Questions from './pages/Questions';
-// import PastExams from './pages/PastExams';
+import PastExams from './pages/PastExams';
 // import MockExams from './pages/MockExams';
 // import Challenges from './pages/Challenges';
 
@@ -30,8 +30,8 @@ function App() {
             <Route path="subjects" element={<Subjects />} />
             <Route path="chapters" element={<Chapters />} />
             <Route path="questions" element={<Questions />} />
-            {/* <Route path="past-exams" element={<PastExams />} />
-            <Route path="mock-exams" element={<MockExams />} />
+            <Route path="past-exams" element={<PastExams />} />
+            {/* <Route path="mock-exams" element={<MockExams />} />
             <Route path="challenges" element={<Challenges />} /> */}
           </Route>
         </Route>
