@@ -6,9 +6,9 @@ import authMiddleware, { isAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/add-user', createUser);
 router.get('/all', authMiddleware, getUser);
-router.put('/:id/edit', authMiddleware, isAdmin, updateUserByAdmin);
+router.post('/add-user', upload.single('profilePicture'), createUser);
+router.put('/:id/edit', authMiddleware, isAdmin, upload.single('profilePicture'), updateUserByAdmin);
 router.put('/:id/ban', authMiddleware, isAdmin, banUser);
 router.delete('/:id', authMiddleware, isAdmin, deleteUser);
 router.post('/update-xp',authMiddleware ,updateXP);

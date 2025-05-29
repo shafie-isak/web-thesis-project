@@ -25,6 +25,7 @@ export const loginUser = async (email, password) => {
   return res.json(); // returns { token, user }
 };
 
+
 export const fetchDashboardData = async (token) => {
   const res = await fetch(`${API_BASE}/admin/dashboard-summary`, {
     headers: {

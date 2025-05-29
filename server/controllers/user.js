@@ -7,6 +7,8 @@ import XPLog from "../models/xp_log.js";
 import mongoose from 'mongoose';
 
 
+
+
 export const getUser = async (req, res) => {
   try {
     const users = await User.find({});
@@ -18,60 +20,60 @@ export const getUser = async (req, res) => {
 }
 
 
-
+// CREATE USER with profile picture
 export const createUser = async (req, res) => {
-  const { name, email, phone, password, profilePicture } = req.body;
-
-  let user = await User.findOne({ email });
-  if (user) return res.status(409).json({ message: "Email already exists" });
-
-  user = await User.findOne({ phone });
-  if (user) return res.status(410).json({ message: "Phone number already exists" });
-
-  if (!name || !email || !phone || !password)
-    return res.status(400).json({ message: "fill all the fields" });
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = new User({
-    name,
-    email,
-    phone,
-    password: hashedPassword,
-    profilePicture: profilePicture || ""  // Accept base64 string
-  });
+  const { name, email, phone, password } = req.body;
+  const profilePicture = req.file?.filename || "";
 
   try {
+    // Check duplicates
+    if (await User.findOne({ email })) return res.status(409).json({ message: "Email already exists" });
+    if (await User.findOne({ phone })) return res.status(410).json({ message: "Phone number already exists" });
+
+    if (!name || !email || !phone || !password)
+      return res.status(400).json({ message: "Fill all the fields" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+      profilePicture
+    });
+
     await newUser.save();
     return res.status(201).json({ success: true, message: "User created successfully!" });
   } catch (error) {
-    console.error("❌ XP Summary Error:", error.message);
-    res.status(500).json({ message: "Failed to fetch weekly XP summary", error: error.message });
+    console.error("User creation failed:", error.message);
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
-
 };
 
+// UPDATE USER by admin with profile picture
 export const updateUserByAdmin = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, phone, role, status } = req.body;
+    const profilePicture = req.file?.filename;
 
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // ✅ Check for duplicate email (by another user)
+    // Check duplicates
     const emailExists = await User.findOne({ email, _id: { $ne: id } });
     if (emailExists) return res.status(409).json({ message: "Email already exists" });
 
-    // ✅ Check for duplicate phone (by another user)
     const phoneExists = await User.findOne({ phone, _id: { $ne: id } });
     if (phoneExists) return res.status(410).json({ message: "Phone number already exists" });
 
-    // ✅ Apply updates
+    // Update fields
     if (name) user.name = name;
     if (email) user.email = email;
     if (phone) user.phone = phone;
     if (role) user.role = role;
     if (status) user.status = status;
+    if (profilePicture) user.profilePicture = profilePicture;
 
     await user.save();
     res.status(200).json({ success: true, message: "User updated", user });
@@ -80,6 +82,12 @@ export const updateUserByAdmin = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+
+
+
+
 
 
 export const banUser = async (req, res) => {
@@ -147,6 +155,7 @@ export const loginUser = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        phone: user.phone, 
         profilePicture: user.profilePicture,
         role: user.role,
         xp: user.xp
