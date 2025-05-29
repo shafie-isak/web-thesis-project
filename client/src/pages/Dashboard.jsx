@@ -4,6 +4,7 @@ import TopUsers from '../components/TopUsers';
 import UsersGrowthChart from '../components/UsersGrowthChart';
 import EarningsChart from '../components/EarningsChart';
 import { fetchDashboardData } from '../utils/api';
+import DashboardSkeleton from '../components/skeletons/DashboardSkeleton';
 
 
 const Dashboard = () => {
@@ -19,11 +20,11 @@ const Dashboard = () => {
             .finally(() => setLoading(false));
     }, []);
 
-    if (loading) return <p className="text-white p-4">Loading...</p>;
+    if (loading) return <DashboardSkeleton/>;
 
     return (
         <div>
-            <main className="p-6 overflow-y-auto  relative h-[87vh] ml-2 rounded-xl  border border-white/10">
+            <main className="p-4 overflow-y-auto  relative h-[87vh] ml-2 rounded-xl  border border-white/10">
                 <h3 className="text-2xl font-bold text-white mb-4">Overview</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                     <StatCard

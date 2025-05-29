@@ -121,3 +121,24 @@ export const deleteQuestion = async (id) => {
   return res.data;
 };
 
+
+
+// Mock Exams API
+
+// Get all mock exams
+export const fetchMockExams = async () => {
+  const res = await axios.get(`${API_BASE}/mockexams`, { headers: getAuthHeaders() });
+  return res.data;
+};
+
+// Create a new mock exam
+export const createMockExam = async (data) => {
+  const res = await axios.post(`${API_BASE}/mockexams`, data, { headers: getAuthHeaders() });
+  return res.data;
+};
+
+// Delete a mock exam
+export const deleteMockExam = async (id) => {
+  const res = await axios.delete(`${API_BASE}/mockexams/${id}`, { headers: getAuthHeaders() });
+  return res.data;
+};

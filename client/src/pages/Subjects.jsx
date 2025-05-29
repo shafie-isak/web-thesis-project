@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Swal from 'sweetalert2';
+import SubjectsSkeleton from "../components/skeletons/SubjectsSkeleton";
 
 
 
@@ -207,6 +208,8 @@ const Subjects = () => {
         document.body.removeChild(link);
     };
 
+       if(loading) return <SubjectsSkeleton/>;
+
     return (
         <div className="p-6 h-[86vh] overflow-hidden">
             {/* Header */}
@@ -247,11 +250,7 @@ const Subjects = () => {
             </div>
 
             {/* Subjects Grid */}
-            {loading ? (
-                <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-white/50"></div>
-                </div>
-            ) : (
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-2 rounded-xl h-[68.3vh] overflow-y-auto">
                     {searchResults.map((subject) => (
                         <motion.div
@@ -284,7 +283,6 @@ const Subjects = () => {
                         </motion.div>
                     ))}
                 </div>
-            )}
 
             {/* Edit/Add Modal */}
             {editModalOpen && (

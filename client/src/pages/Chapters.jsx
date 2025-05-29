@@ -20,6 +20,7 @@ import {
     deleteChapter,
 } from "../utils/api";
 import Swal from 'sweetalert2';
+import ChaptersSkeleton from "../components/skeletons/ChaaptersSkeleton";
 
 const Chapters = () => {
     const [chapters, setChapters] = useState([]);
@@ -171,13 +172,34 @@ const Chapters = () => {
         document.body.removeChild(link);
     };
 
-
+    if(loading) return <ChaptersSkeleton/>;
 
 
     return (
         <div className="px-6 text-white">
             <div className="flex justify-between items-center">
-                <div className="flex gap-3 flex-1">
+               
+                <h2 className="font-bold">All Chapters</h2>
+
+
+                <div className="flex gap-2 flex-">
+
+                    <button
+                        onClick={() => openModal()}
+                        className="px-4 py-2 border border-white/30 rounded-full bg-white/10 hover:bg-white/20 flex items-center gap-2"
+                    >
+                        <FaPlus /> Add Chapter
+                    </button>
+                    <button onClick={exportChaptersCSV} className="bg-white/10 px-5 py-2 border flex gap-2 justify-between items-center border-white/30 text-white rounded-full">
+                        <FaFileExport /> Export CSV
+                    </button>
+                </div>
+            </div>
+
+
+
+            <div className="flex justify-between items-center mt-4">
+                 <div className="flex gap-3 flex-1">
                     <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 w-full max-w-sm">
                         <FaSearch className="text-white/70 mr-2" />
                         <input
@@ -199,25 +221,6 @@ const Chapters = () => {
                         ))}
                     </select>
                 </div>
-
-                <div className="flex gap-2 flex-">
-
-                    <button
-                        onClick={() => openModal()}
-                        className="px-4 py-2 border border-white/30 rounded-full bg-white/10 hover:bg-white/20 flex items-center gap-2"
-                    >
-                        <FaPlus /> Add Chapter
-                    </button>
-                    <button onClick={exportChaptersCSV} className="bg-white/10 px-5 py-2 border flex gap-2 justify-between items-center border-white/30 text-white rounded-full">
-                        <FaFileExport /> Export CSV
-                    </button>
-                </div>
-            </div>
-
-
-
-            <div className="flex justify-between items-center p-3">
-                <h2 className="font-bold">All Chapters</h2>
                 <div className="flex gap-2 items-center">
                     <label htmlFor="">Sort by</label>
                     <select
@@ -240,11 +243,6 @@ const Chapters = () => {
 
             </div>
 
-            {loading ? (
-                <div className="flex justify-center items-center h-64">
-                    <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-white/50"></div>
-                </div>
-            ) : (
                 <div className="rounded-2xl h-[75vh] overflow-hidden overflow-y-auto border border-white/30">
                     <table className="w-full  border border-white/10 text-sm">
                         <thead className="bg-purple-800 text-white/90">
@@ -285,7 +283,6 @@ const Chapters = () => {
                         </tbody>
                     </table>
                 </div>
-            )}
 
             {modalOpen && (
                 <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">

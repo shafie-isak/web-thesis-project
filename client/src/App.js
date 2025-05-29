@@ -7,12 +7,12 @@ import Dashboard from './pages/Dashboard';
 import Unauthorized from "./pages/Unauthorized";
 import ProtectedRoute from './utils/ProtectedRoute';
 import DashboardLayout from './pages/DashboardLayout';
-import AdminUsers from './pages/AdminUsers';
+import AdminUsers from './pages/Users';
 import Subjects from './pages/Subjects';
 import Chapters from './pages/Chapters';
 import Questions from './pages/Questions';
 import PastExams from './pages/PastExams';
-// import MockExams from './pages/MockExams';
+import MockExams from './pages/MockExams';
 // import Challenges from './pages/Challenges';
 
 function App() {
@@ -31,8 +31,8 @@ function App() {
             <Route path="chapters" element={<Chapters />} />
             <Route path="questions" element={<Questions />} />
             <Route path="past-exams" element={<PastExams />} />
-            {/* <Route path="mock-exams" element={<MockExams />} />
-            <Route path="challenges" element={<Challenges />} /> */}
+            <Route path="mock-exams" element={<MockExams />} />
+            {/* <Route path="challenges" element={<Challenges />} /> */}
           </Route>
         </Route>
       </Routes>

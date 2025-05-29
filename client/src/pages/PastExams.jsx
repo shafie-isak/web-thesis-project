@@ -5,6 +5,8 @@ import Modal from "react-modal";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import QuestionsSkeleton from "../components/skeletons/QeustionsSkeleton";
+import PastExamsSkeleton from "../components/skeletons/PastExamsSkeleton";
 
 Modal.setAppElement("#root");
 
@@ -161,6 +163,7 @@ const PastExams = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  if(isLoading) return <PastExamsSkeleton/>;
 
   return (
     <div className="px-6  text-white min-h-[87vh]">
@@ -227,12 +230,6 @@ const PastExams = () => {
 
       {/* Table */}
       <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
-        {isLoading ? (
-          <div className="flex justify-center items-center p-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-          </div>
-        ) : (
-          <>
             <table className="w-full">
               <thead className="bg-purple-700">
                 <tr>
@@ -289,8 +286,6 @@ const PastExams = () => {
                 )}
               </tbody>
             </table>
-          </>
-        )}
       </div>
 
       {/* Pagination */}

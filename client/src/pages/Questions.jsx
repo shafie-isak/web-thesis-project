@@ -20,6 +20,7 @@ import {
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import Swal from 'sweetalert2';
+import QuestionsSkeleton from "../components/skeletons/QeustionsSkeleton";
 
 const Questions = () => {
   const [questions, setQuestions] = useState([]);
@@ -38,9 +39,9 @@ const Questions = () => {
   const [sortType, setSortType] = useState("difficulty");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-    const [filterSubject, setFilterSubject] = useState("");
+  const [filterSubject, setFilterSubject] = useState("");
   const [filterChapter, setFilterChapter] = useState("");
-  
+
 
 
 
@@ -187,30 +188,30 @@ const Questions = () => {
 
 
 
-const exportCSV = () => {
-  const headers = ["Question", "Answer", "Difficulty", "Chapter", "Subject"];
-  const rows = sortedFiltered.map((q) => [
-    q.question,
-    q.answer,
-    q.difficulty_level,
-    q.chapter_id?.chapter_name || "",
-    q.chapter_id?.subject_id?.subject_name || ""
-  ]);
+  const exportCSV = () => {
+    const headers = ["Question", "Answer", "Difficulty", "Chapter", "Subject"];
+    const rows = sortedFiltered.map((q) => [
+      q.question,
+      q.answer,
+      q.difficulty_level,
+      q.chapter_id?.chapter_name || "",
+      q.chapter_id?.subject_id?.subject_name || ""
+    ]);
 
-  const csvContent =
-    "data:text/csv;charset=utf-8," +
-    [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(",")).join("\n");
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(",")).join("\n");
 
-  const now = new Date();
-  const filename = `questions_filtered_${now.getFullYear()}_${now.getMonth() + 1}_${now.getDate()}.csv`;
+    const now = new Date();
+    const filename = `questions_filtered_${now.getFullYear()}_${now.getMonth() + 1}_${now.getDate()}.csv`;
 
-  const link = document.createElement("a");
-  link.setAttribute("href", encodeURI(csvContent));
-  link.setAttribute("download", filename);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
+    const link = document.createElement("a");
+    link.setAttribute("href", encodeURI(csvContent));
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
 
 
@@ -226,8 +227,12 @@ const exportCSV = () => {
       return 0;
     });
 
+  if (loading) return <QuestionsSkeleton />;
+
   return (
     <div className="px-6 text-white">
+      <h2 className="text-2xl font-bold text-white pb-3">Questions Bank</h2>
+
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="flex gap-3 flex-1">
           <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 w-full max-w-sm">
@@ -240,16 +245,16 @@ const exportCSV = () => {
             />
           </div>
           <select onChange={(e) => setSortType(e.target.value)} className="px-4 py-2 bg-white/10 border border-white/20 rounded-full text-white focus:outline-none focus:border-white/50">
-            <option  className="text-black/75" value="difficulty">Sort by Difficulty</option>
-            <option  className="text-black/75" value="chapter">Sort by Chapter Name</option>
+            <option className="text-black/75" value="difficulty">Sort by Difficulty</option>
+            <option className="text-black/75" value="chapter">Sort by Chapter Name</option>
           </select>
           <select onChange={(e) => setFilterSubject(e.target.value)} className="px-4 py-2 bg-white/10 border border-white/20 rounded-full text-white focus:outline-none focus:border-white/50">
-            <option  className="text-black/50" value="">All Subjects</option>
-            {subjects.map(sub => <option  className="text-black/75" key={sub._id} value={sub._id}>{sub.subject_name}</option>)}
+            <option className="text-black/50" value="">All Subjects</option>
+            {subjects.map(sub => <option className="text-black/75" key={sub._id} value={sub._id}>{sub.subject_name}</option>)}
           </select>
           <select onChange={(e) => setFilterChapter(e.target.value)} className="px-4 py-2 bg-white/10 border border-white/20 rounded-full text-white focus:outline-none max-w[200px] focus:border-white/50">
             <option className="text-black/50" value="">All Chapters</option>
-            {chapters.map(ch => <option  className="text-black/75" key={ch._id} value={ch._id}>{ch.chapter_name}</option>)}
+            {chapters.map(ch => <option className="text-black/75" key={ch._id} value={ch._id}>{ch.chapter_name}</option>)}
           </select>
         </div>
         <div className="flex gap-3">
@@ -262,48 +267,39 @@ const exportCSV = () => {
         </div>
       </div>
 
-      <h2>Questions Bank</h2>
-
-      {loading ? (
-        <div className="flex justify-center items-center h-[70vh]">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-white/50"></div>
-        </div>
-      ) : (
-        <div className="rounded-xl h-[70vh] overflow-y-auto border border-white/20">
-          <table className="w-full text-sm">
-            <thead className="bg-purple-700 text-white">
-              <tr>
-                <th className="p-3 text-left">Question</th>
-                <th className="p-3 text-left">Answer</th>
-                <th className="p-3 text-left">Level</th>
-                <th className="p-3 text-left">Chapter</th>
-                <th className="p-3 text-left">Subject</th>
-                <th className="p-3 text-right">Actions</th>
+      <div className="rounded-xl h-[70vh] overflow-y-auto border border-white/20">
+        <table className="w-full text-sm">
+          <thead className="bg-purple-700 text-white">
+            <tr>
+              <th className="p-3 text-left">Question</th>
+              <th className="p-3 text-left">Answer</th>
+              <th className="p-3 text-left">Level</th>
+              <th className="p-3 text-left">Chapter</th>
+              <th className="p-3 text-left">Subject</th>
+              <th className="p-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedFiltered.map((q) => (
+              <tr key={q._id} className="hover:bg-white/5 border-t border-white/10">
+                <td className="p-3">{q.question}</td>
+                <td className="p-3">{q.answer}</td>
+                <td className="p-3">{q.difficulty_level}</td>
+                <td className="p-3">{q.chapter_id.chapter_name}</td>
+                <td className="p-3">{q.chapter_id.subject_id?.subject_name || "N/A"}</td>
+                <td className="p-3 text-right flex gap-2 items-center">
+                  <button onClick={() => openModal(q)} className="p-2 bg-blue-600 hover:bg-blue-700 rounded">
+                    <FaEdit />
+                  </button>
+                  <button onClick={() => handleDelete(q._id)} className="p-2 bg-red-600 hover:bg-red-700 rounded">
+                    <FaTrash />
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {sortedFiltered.map((q) => (
-                <tr key={q._id} className="hover:bg-white/5 border-t border-white/10">
-                  <td className="p-3">{q.question}</td>
-                  <td className="p-3">{q.answer}</td>
-                  <td className="p-3">{q.difficulty_level}</td>
-                  <td className="p-3">{q.chapter_id.chapter_name}</td>
-                  <td className="p-3">{q.chapter_id.subject_id?.subject_name || "N/A"}</td>
-                  <td className="p-3 text-right flex gap-2 items-center">
-                    <button onClick={() => openModal(q)} className="p-2 bg-blue-600 hover:bg-blue-700 rounded">
-                      <FaEdit />
-                    </button>
-                    <button onClick={() => handleDelete(q._id)} className="p-2 bg-red-600 hover:bg-red-700 rounded">
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {modalOpen && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
