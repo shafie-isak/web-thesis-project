@@ -144,29 +144,42 @@ export const loginUser = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    const decryptPassword = await bcrypt.compare(password, user.password);
-    if (!user || !decryptPassword)
-      return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id, username: user.email, role: user.role, }, process.env.JWT_SECRET);
+    if (!user) {
+      return res.status(401).json({ message: "User not found or incorrect credentials." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Incorrect password." });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, username: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
     res.status(200).json({
       token,
       user: {
         _id: user._id,
         name: user.name,
         email: user.email,
-        phone: user.phone, 
+        phone: user.phone,
         profilePicture: user.profilePicture,
         role: user.role,
-        xp: user.xp
-      }
+        xp: user.xp,
+      },
     });
 
   } catch (error) {
-    console.log("error: ", error.message);
+    console.log("Login error:", error.message);
     res.status(500).json({ message: "Server error" });
   }
-}
+};
+
 
 
 export const getCurrentUserProfile = async (req, res) => {

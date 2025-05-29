@@ -11,18 +11,24 @@ const getAuthHeaders = () => ({
 
 
 export const loginUser = async (email, password) => {
-  const res = await fetch(`${API_BASE}/users/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+  try {
+    const res = await fetch(`${API_BASE}/users/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || "Login failed");
+    const data = await res.json(); // 👈 extract actual error response
+
+    if (!res.ok) {
+      throw new Error(data.message || "Login failed");
+    }
+
+    return data;
+  } catch (error) {
+    // This ensures a clear error message is returned
+    throw new Error(error.message || "Network error");
   }
-
-  return res.json(); // returns { token, user }
 };
 
 
