@@ -145,22 +145,30 @@ export const loginUser = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
+    // ✅ Check if user exists
     if (!user) {
       return res.status(401).json({ message: "User not found or incorrect credentials." });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    // ✅ Block banned users
+    if (user.status === 'banned') {
+      return res.status(403).json({ message: "Your account has been banned. Contact support." });
+    }
 
+    // ✅ Verify password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Incorrect password." });
     }
 
+    // ✅ Generate JWT token
     const token = jwt.sign(
       { id: user._id, username: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
+    // ✅ Respond with token and user info
     res.status(200).json({
       token,
       user: {
@@ -171,14 +179,16 @@ export const loginUser = async (req, res) => {
         profilePicture: user.profilePicture,
         role: user.role,
         xp: user.xp,
-      },
+        status: user.status,
+      }
     });
 
   } catch (error) {
-    console.log("Login error:", error.message);
+    console.error("Login error:", error.message);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 
@@ -195,6 +205,7 @@ export const getCurrentUserProfile = async (req, res) => {
       xp: user.xp,
       level: user.level,
       badges: user.badges,
+      status: user.status,
     });
   } catch (error) {
     console.error("❌ Error fetching profile:", error.message);

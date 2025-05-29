@@ -41,8 +41,13 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message || "Login failed");
-    } finally {
+      if (err.message.includes("banned")) {
+        navigate("/banned"); // ✅ redirect to banned screen
+      } else {
+        setError(err.message || "Login failed");
+      }
+    }
+    finally {
       setLoading(false);
     }
   };
@@ -92,7 +97,7 @@ const Login = () => {
         </p>
       </div>
     </div>
-  ); 
+  );
 };
 
 export default Login;

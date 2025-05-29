@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import { getUsers, deleteUser, banUser } from "../utils/api";
 import { FaEdit, FaTrash, FaUserLock, FaCrown, FaUser, FaPlus, FaFileExport, FaSearch, } from "react-icons/fa";
 import { motion } from "framer-motion";
-import EditUserModal from "./EditUserModel";
+import EditUserModal from "../components/EditUserModel";
 import AddUserModal from "./AddUserModal";
 import Swal from "sweetalert2";
 import UsersSkeleton from "../components/skeletons/AdminUsersSkeleton";
@@ -159,7 +159,7 @@ const AdminUsers = () => {
         const currentUserId = JSON.parse(localStorage.getItem("user"))?.id;
 
         if (userId === currentUserId) {
-            toast.error("❌ You cannot ban yourself.");
+            toast.error("You cannot ban yourself.");
             return;
         }
 

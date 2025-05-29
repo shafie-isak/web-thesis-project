@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
+
 
 const Topbar = () => {
   const navigate = useNavigate();
@@ -48,19 +50,15 @@ const Topbar = () => {
           timer: 1500
         });
       } else {
-        showNotification(result.message || "Update failed", "error");
+        toast.error(result.message || "Update failed!");
       }
     } catch (err) {
-      showNotification("Update failed. Please try again.", "error");
+      toast.error("Update failed. Please try again!");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const showNotification = (message, type) => {
-    // You could implement a proper notification system here
-    alert(message); // Temporary solution
-  };
 
   return (
     <header className="h-[10vh] px-6 p-4 flex items-center justify-between relative bg-gradient-to-r ">
