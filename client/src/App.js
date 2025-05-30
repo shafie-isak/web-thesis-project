@@ -15,6 +15,7 @@ import Questions from './pages/Questions';
 import PastExams from './pages/PastExams';
 import MockExams from './pages/MockExams';
 import Challenges from './pages/Challenges';
+import AdminUserActivity from './pages/UserActivity';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="users" element={<AdminUsers />} />
+            <Route path="activity-logs" element={<AdminUserActivity />} />
             <Route path="subjects" element={<Subjects />} />
             <Route path="chapters" element={<Chapters />} />
             <Route path="questions" element={<Questions />} />

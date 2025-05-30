@@ -7,7 +7,7 @@ import {
   MdOutlineDashboard, MdOutlineBookmarks, MdOutlineQuiz
 } from 'react-icons/md';
 import {
-  LuPanelLeftClose, LuPanelRightClose,
+  LuPanelLeftClose, LuPanelRightClose, LuHistory
 } from 'react-icons/lu';
 import {
   IoBookOutline, IoBookmark
@@ -30,6 +30,7 @@ const Sidebar = () => {
 
   const navLinks = [
     { label: 'Dashboard', icon: <MdOutlineDashboard size={20} />, path: '/dashboard' },
+    { label: 'Activity Logs', icon: <LuHistory size={20} />, path: '/dashboard/activity-logs' },
     { label: 'Users', icon: <FiUsers size={20} />, path: '/dashboard/users' },
     { label: 'Subjects', icon: <IoBookOutline size={20} />, path: '/dashboard/subjects' },
     { label: 'chapters', icon: <MdOutlineBookmarks size={20} />, path: '/dashboard/chapters' },

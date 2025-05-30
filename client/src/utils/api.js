@@ -67,6 +67,19 @@ export const banUser = (id) => axios.put(`${API_BASE}/users/${id}/ban`, {}, { he
 
 
 
+// User Activities API
+export const fetchAllActivities = async () => {
+  const res = await axios.get(`${API_BASE}/activities/all`, { headers: getAuthHeaders() });
+  return res.data.activities;
+};
+
+export const fetchActivityStats = async () => {
+  const res = await axios.get(`${API_BASE}/activities/stats/daily`, { headers: getAuthHeaders() });
+  return res.data;
+};
+
+
+
 
 //Chapters API calls Starts hee
 
@@ -159,6 +172,7 @@ export const fetchChallenges = async () => {
   const res = await axios.get(`${API_BASE}/challenges`, { headers: getAuthHeaders() });
   return res.data;
 };
+
 
 // Create a new challenge
 export const createChallenge = async (data) => {

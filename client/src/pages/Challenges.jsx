@@ -329,6 +329,11 @@ const Challenges = () => {
                                                 <div className="text-xs text-white/50">Questions</div>
                                                 <div className="font-medium text-white">{ch.questionIds.length}</div>
                                             </div>
+                                            <div className="bg-white/10 p-3 rounded-lg">
+                                                <div className="text-xs text-white/50">Users Attempted</div>
+                                                <div className="font-medium text-white">{ch.participantCount || 0}</div>
+                                            </div>
+
                                         </div>
 
                                         <div className="text-sm text-white/50 mb-4">

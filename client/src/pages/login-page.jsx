@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../utils/api";
+import axios from "axios";
 
 
 
@@ -40,6 +41,23 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/dashboard");
+
+
+      await axios.post("http://localhost:5000/api/activities/log", {
+        userId: data.user._id,
+        type: "User",
+        action: "Login",
+        metadata: {
+          label: "Login Form",
+          description: `${data.user.name} logged in via email`,
+        }
+      }, {
+        headers: {
+          Authorization: `Bearer ${data.token}`,
+        }
+      });
+
+
     } catch (err) {
       if (err.message.includes("banned")) {
         navigate("/banned"); // ✅ redirect to banned screen

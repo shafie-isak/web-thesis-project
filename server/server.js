@@ -1,4 +1,6 @@
 import dotenv from 'dotenv';
+import { Server } from 'socket.io';
+import http from 'http';
 import express from 'express';
 import connectDB from './config/database.js';
 import userRoutes from './routes/user.js';
@@ -11,7 +13,7 @@ import challengeRoutes from './routes/challenges.js';
 import { scheduleDailyChallenge } from './cron/generate_daily.js';
 import pastExamRoutes from './routes/pastExams.js';
 import adminRoutes from './routes/admin.js';
-
+import activityRoutes from './routes/userActivities.js';
 // import './cron/generateMockExams.js';
 import cors from 'cors';
 import fs from 'fs';
@@ -20,6 +22,16 @@ import path from 'path';
 
 dotenv.config();
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: '*' }
+});
+
+io.on('connection', (socket) => {
+  console.log('🟢 New socket connected: ', socket.id);
+});
+
+app.set('io', io);
 
 // ✅ Increase JSON body limit to handle base64 images (still good to keep)
 app.use(express.json({ limit: '20mb' }));
@@ -44,6 +56,9 @@ app.use('/api/mockexams', mockExamRoutes);
 app.use('/api/challenges', challengeRoutes);
 app.use('/api/pastexams', pastExamRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/activities', activityRoutes);
+
+
 
 
 
@@ -65,6 +80,7 @@ app.use('/uploads', express.static('uploads'));
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server + Socket.IO running on port ${PORT}`);
 });
+

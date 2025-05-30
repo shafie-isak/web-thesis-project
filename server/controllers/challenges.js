@@ -52,10 +52,26 @@ export const submitChallengeResult = async (req, res) => {
 };
 
 
+// controllers/challengeController.js
 export const getChallenges = async (req, res) => {
   try {
-    const challenges = await Challenge.find().sort({ startDate: -1 });
-    res.json(challenges);
+    const challenges = await Challenge.find().sort({ startDate: -1 })
+      .populate({
+        path: 'questionIds',
+        select: 'text options'
+      })
+      .lean(); // convert to plain JS object
+    
+    // Add participant count to each challenge
+    const challengesWithStats = await Promise.all(challenges.map(async (challenge) => {
+      const count = await ChallengeResult.countDocuments({ challengeId: challenge._id });
+      return {
+        ...challenge,
+        participantCount: count
+      };
+    }));
+
+    res.json(challengesWithStats);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -167,7 +183,7 @@ export const deleteChallenge = async (req, res) => {
   }
 };
 
-
+// controllers/challengeController.js
 export const getChallengeStats = async (req, res) => {
   try {
     const stats = await Challenge.aggregate([
@@ -182,13 +198,16 @@ export const getChallengeStats = async (req, res) => {
       {
         $project: {
           title: 1,
-          participants: { $size: "$results" },
+          description: 1,
+          type: 1,
+          timeLimit: 1,
           startDate: 1,
           endDate: 1,
-          type: 1
+          questionIds: 1,
+          participantCount: { $size: "$results" }
         }
       },
-      { $sort: { participants: -1 } }
+      { $sort: { startDate: -1 } }
     ]);
 
     res.json(stats);
