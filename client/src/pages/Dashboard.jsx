@@ -67,15 +67,15 @@ const Dashboard = () => {
                     <div className="lg:col-span-1">
                         <TopUsers />
                     </div>
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-2 lg:row-span-2">
                         <ChallengeStatsChart />
                     </div>
                     <div className="lg:col-span-1">
                         <UsersGrowthChart />
                     </div>
-                    {/* <div className="lg:col-span-1">
+                    <div className="lg:col-span-1">
                         <EarningsChart />
-                    </div> */}
+                    </div>
                     
                 </div>
             </main>

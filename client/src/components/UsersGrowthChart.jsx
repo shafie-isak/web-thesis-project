@@ -50,7 +50,7 @@ const UsersGrowthChart = () => {
   };
 
   return (
-    <div className="bg-white bg-opacity-10 p-5 rounded-2xl shadow-md w-full h-60 lg:w-[360px]">
+    <div className="bg-white bg-opacity-10 p-5 rounded-2xl shadow-md w-full h-65">
       <div className="flex justify-between mb-2">
         <h2 className="text-white text-lg font-semibold">Users Growth</h2>
         <span className="text-white text-sm opacity-60">Monthly</span>
