@@ -172,13 +172,13 @@ const Chapters = () => {
         document.body.removeChild(link);
     };
 
-    if(loading) return <ChaptersSkeleton/>;
+    if (loading) return <ChaptersSkeleton />;
 
 
     return (
         <div className="px-6 text-white">
             <div className="flex justify-between items-center">
-               
+
                 <h2 className="font-bold">All Chapters</h2>
 
 
@@ -199,7 +199,7 @@ const Chapters = () => {
 
 
             <div className="flex justify-between items-center mt-4">
-                 <div className="flex gap-3 flex-1">
+                <div className="flex gap-3 flex-1">
                     <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 w-full max-w-sm">
                         <FaSearch className="text-white/70 mr-2" />
                         <input
@@ -221,7 +221,7 @@ const Chapters = () => {
                         ))}
                     </select>
                 </div>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center mb-">
                     <label htmlFor="">Sort by</label>
                     <select
                         value={sortType}
@@ -243,46 +243,56 @@ const Chapters = () => {
 
             </div>
 
-                <div className="rounded-2xl h-[75vh] overflow-hidden overflow-y-auto border border-white/30">
-                    <table className="w-full  border border-white/10 text-sm">
-                        <thead className="bg-purple-800 text-white/90">
-                            <tr>
-                                <th className="p-3 text-left">#</th>
-                                <th className="p-3 text-left">Chapter</th>
-                                <th className="p-3 text-left">Questions</th>
-                                <th className="p-3 text-left">Subject</th>
-                                <th className="p-3 text-right">Actions</th>
+            <div className="rounded-2xl h-[75vh] overflow-hidden overflow-y-auto border border-white/30">
+                <table className="w-full  border border-white/10 text-sm">
+                    <thead className="bg-purple-800 text-white/90">
+                        <tr>
+                            <th className="p-3 text-left">#</th>
+                            <th className="p-3 text-left">Chapter</th>
+                            <th className="p-3 text-left">Questions</th>
+                            <th className="p-3 text-left">Subject</th>
+                            <th className="p-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sortedFiltered.map((ch) => (
+                            <tr
+                                key={ch._id}
+                                className="border-t border-white/10 hover:bg-white/10 transition"
+                            >
+                                <td className="p-3">{ch.chapter_number}</td>
+                                <td className="p-3">{ch.chapter_name}</td>
+                                <td className="p-3">{ch.questionCount || 0}</td>
+                                <td className="p-3">{ch.subject_id.subject_name}</td>
+                                <td className="p-3 text-right space-x-2">
+                                    <button
+                                        onClick={() => openModal(ch)}
+                                        className="p-2 bg-blue-600 hover:bg-blue-700 rounded"
+                                    >
+                                        <FaEdit />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(ch._id)}
+                                        className="p-2 bg-red-600 hover:bg-red-700 rounded"
+                                    >
+                                        <FaTrash />
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {sortedFiltered.map((ch) => (
-                                <tr
-                                    key={ch._id}
-                                    className="border-t border-white/10 hover:bg-white/10 transition"
-                                >
-                                    <td className="p-3">{ch.chapter_number}</td>
-                                    <td className="p-3">{ch.chapter_name}</td>
-                                    <td className="p-3">{ch.questionCount || 0}</td>
-                                    <td className="p-3">{ch.subject_id.subject_name}</td>
-                                    <td className="p-3 text-right space-x-2">
-                                        <button
-                                            onClick={() => openModal(ch)}
-                                            className="p-2 bg-blue-600 hover:bg-blue-700 rounded"
-                                        >
-                                            <FaEdit />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(ch._id)}
-                                            className="p-2 bg-red-600 hover:bg-red-700 rounded"
-                                        >
-                                            <FaTrash />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                        ))}
+                    </tbody>
+                </table>
+
+                {sortedFiltered.length === 0 && (
+                    <div className="bg-white/10 rounded-xl p-8 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-white/50 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 className="text-xl font-medium text-white/50 mb-2">No Chapters found</h3>
+                        <p className="text-white/50 ">Try adjusting your search or create a new chapter</p>
+                    </div>
+                )}
+            </div>
 
             {modalOpen && (
                 <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">

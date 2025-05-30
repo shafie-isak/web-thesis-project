@@ -14,7 +14,7 @@ import Chapters from './pages/Chapters';
 import Questions from './pages/Questions';
 import PastExams from './pages/PastExams';
 import MockExams from './pages/MockExams';
-// import Challenges from './pages/Challenges';
+import Challenges from './pages/Challenges';
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
             <Route path="questions" element={<Questions />} />
             <Route path="past-exams" element={<PastExams />} />
             <Route path="mock-exams" element={<MockExams />} />
-            {/* <Route path="challenges" element={<Challenges />} /> */}
+            <Route path="challenges" element={<Challenges />} />
           </Route>
         </Route>
       </Routes>

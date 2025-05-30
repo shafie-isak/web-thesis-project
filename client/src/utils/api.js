@@ -149,3 +149,31 @@ export const deleteMockExam = async (id) => {
   const res = await axios.delete(`${API_BASE}/mockexams/${id}`, { headers: getAuthHeaders() });
   return res.data;
 };
+
+
+
+// Challenges API
+
+// Get all Challenges
+export const fetchChallenges = async () => {
+  const res = await axios.get(`${API_BASE}/challenges`, { headers: getAuthHeaders() });
+  return res.data;
+};
+
+// Create a new challenge
+export const createChallenge = async (data) => {
+  const res = await axios.post(`${API_BASE}/challenges`, data, { headers: getAuthHeaders() });
+  return res.data;
+};
+
+//Update a challenge
+export const updateChallenge = async (id, data) => {
+  const res = await axios.put(`${API_BASE}/challenges/${id}`, data, { headers: getAuthHeaders() });
+  return res.data;
+};
+
+//Delete a challenge
+export const deleteChallenge = async (id) => {
+  const res = await axios.delete(`${API_BASE}/challenges/${id}`, { headers: getAuthHeaders() });
+  return res.data;
+};

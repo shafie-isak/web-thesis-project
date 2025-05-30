@@ -3,18 +3,28 @@ import express from 'express';
 import {
   getDailyChallenge,
   getWeeklyChallenge,
-  submitChallengeResult
+  submitChallengeResult,
+  getChallenges,
+  createChallenge,
+  updateChallenge,
+  deleteChallenge
 } from '../controllers/challenges.js';
-import Question from '../models/questions.js'; // ✅ correct relative path
-import Challenge from '../models/challenges.js'; // ✅ correct relative path
+import Question from '../models/questions.js';
+import Challenge from '../models/challenges.js';
+import authMiddleware from '../middleware/authMiddleware.js';
+
 
 const router = express.Router();
 
 router.get('/daily', getDailyChallenge);
 router.get('/weekly', getWeeklyChallenge);
 router.post('/submit', submitChallengeResult);
+router.get('/', authMiddleware, getChallenges);
+router.post('/', authMiddleware, createChallenge);
+router.put('/:id', authMiddleware, updateChallenge);
+router.delete('/:id', authMiddleware, deleteChallenge);
 
-// routes/challenges.js
+
 router.post('/generate-daily', async (req, res) => {
     try {
       const today = new Date();

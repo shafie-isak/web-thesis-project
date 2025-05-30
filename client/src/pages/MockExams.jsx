@@ -240,7 +240,17 @@ const MockExams = () => {
                 ))}
               </tbody>
             </table>
+            {paginated.length === 0 && (
+                <div className="bg-white/10 rounded-xl p-8 text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-white/50 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h3 className="text-xl font-medium text-white/50 mb-2">No Mock Exams found</h3>
+                  <p className="text-white/50 ">Try adjusting your search or create a new mock exam</p>
+                </div>
+              )}
           </div>
+
 
           {filtered.length > itemsPerPage && (
             <div className="flex items-center justify-center mt-4 gap-4 text-white">

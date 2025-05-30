@@ -213,7 +213,7 @@ const Subjects = () => {
     return (
         <div className="p-6 h-[86vh] overflow-hidden">
             {/* Header */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between flex-wrap items-center mb-6">
                 <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 w-full max-w-sm">
                     <FaSearch className="text-gray-400 mr-2" />
                     <input

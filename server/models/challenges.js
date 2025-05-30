@@ -11,6 +11,7 @@ const ChallengeSchema = new mongoose.Schema({
   description: String,
   questionIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Question' }],
   timeLimit: Number,
+  type: String,
   startDate: Date,
   endDate: Date,
 });
