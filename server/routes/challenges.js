@@ -7,7 +7,8 @@ import {
   getChallenges,
   createChallenge,
   updateChallenge,
-  deleteChallenge
+  deleteChallenge,
+  getChallengeStats
 } from '../controllers/challenges.js';
 import Question from '../models/questions.js';
 import Challenge from '../models/challenges.js';
@@ -23,6 +24,7 @@ router.get('/', authMiddleware, getChallenges);
 router.post('/', authMiddleware, createChallenge);
 router.put('/:id', authMiddleware, updateChallenge);
 router.delete('/:id', authMiddleware, deleteChallenge);
+router.get("/stats", getChallengeStats);
 
 
 router.post('/generate-daily', async (req, res) => {

@@ -1,9 +1,9 @@
 // controllers/challengeController.js
-import Challenge from '../models/challenges.js';
-import ChallengeResult from '../models/challenge_result.js';
+import ChallengeResult from "../models/challenge_result.js";
+import Challenge from "../models/challenges.js";
 import Question from '../models/questions.js';
 import { format } from 'date-fns';
-import ChallengeProgress from '../models/challenge_result.js'; 
+import ChallengeProgress from '../models/challenge_progress.js'; 
 
 // GET /api/challenges/daily
 export const getDailyChallenge = async (req, res) => {
@@ -164,5 +164,36 @@ export const deleteChallenge = async (req, res) => {
     res.status(200).json({ message: "✅ Challenge and related data deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+
+export const getChallengeStats = async (req, res) => {
+  try {
+    const stats = await Challenge.aggregate([
+      {
+        $lookup: {
+          from: "challengeresults",
+          localField: "_id",
+          foreignField: "challengeId",
+          as: "results"
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          participants: { $size: "$results" },
+          startDate: 1,
+          endDate: 1,
+          type: 1
+        }
+      },
+      { $sort: { participants: -1 } }
+    ]);
+
+    res.json(stats);
+  } catch (error) {
+    console.error("Error fetching challenge stats:", error);
+    res.status(500).json({ message: "Failed to load challenge stats" });
   }
 };

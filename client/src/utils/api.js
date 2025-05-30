@@ -177,3 +177,13 @@ export const deleteChallenge = async (id) => {
   const res = await axios.delete(`${API_BASE}/challenges/${id}`, { headers: getAuthHeaders() });
   return res.data;
 };
+
+
+// utils/api.js
+export const fetchChallengeStats = async () => {
+  const res = await fetch("http://localhost:5000/api/challenges/stats");
+  if (!res.ok) {
+    throw new Error("Failed to fetch challenge stats");
+  }
+  return await res.json();
+};

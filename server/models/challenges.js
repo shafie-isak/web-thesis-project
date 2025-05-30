@@ -14,6 +14,6 @@ const ChallengeSchema = new mongoose.Schema({
   type: String,
   startDate: Date,
   endDate: Date,
-});
+},{ timestamps: true });
 
 export default mongoose.model('Challenge', ChallengeSchema);

@@ -5,10 +5,9 @@ import UsersGrowthChart from '../components/UsersGrowthChart';
 import EarningsChart from '../components/EarningsChart';
 import { fetchDashboardData } from '../utils/api';
 import DashboardSkeleton from '../components/skeletons/DashboardSkeleton';
-
+import ChallengeStatsChart,{fe} from "../components/ChallengeStatsChart";
 
 const Dashboard = () => {
-
     const [stats, setStats] = useState({});
     const [loading, setLoading] = useState(true);
 
@@ -24,7 +23,7 @@ const Dashboard = () => {
 
     return (
         <div>
-            <main className="p-4 overflow-y-auto  relative h-[87vh] ml-2 rounded-xl  border border-white/10">
+            <main className="p-4 overflow-y-auto relative h-[87vh] ml-2 rounded-xl border border-white/10">
                 <h3 className="text-2xl font-bold text-white mb-4">Overview</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
                     <StatCard
@@ -64,10 +63,20 @@ const Dashboard = () => {
                         className="bg-white/90 backdrop-blur-sm"
                     />
                 </div>
-                <div className="flex flex-col lg:flex-row gap-6 mt-8">
-                    <TopUsers />
-                    <UsersGrowthChart />
-                    <EarningsChart />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+                    <div className="lg:col-span-1">
+                        <TopUsers />
+                    </div>
+                    <div className="lg:col-span-1">
+                        <ChallengeStatsChart />
+                    </div>
+                    <div className="lg:col-span-1">
+                        <UsersGrowthChart />
+                    </div>
+                    {/* <div className="lg:col-span-1">
+                        <EarningsChart />
+                    </div> */}
+                    
                 </div>
             </main>
         </div>
