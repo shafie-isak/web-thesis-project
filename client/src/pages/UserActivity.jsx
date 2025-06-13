@@ -27,7 +27,7 @@ const UserActivity = () => {
 
     useEffect(() => {
         const enableSocket = () => {
-            const socket = io('http://localhost:5000');
+            const socket = io('http://54.173.216.17:5000');
 
             socket.on('connect', () => {
                 console.log("🔌 Connected to socket:", socket.id);
@@ -57,7 +57,7 @@ const UserActivity = () => {
 
     const fetchActivities = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/activities/all", {
+            const res = await axios.get("http://54.173.216.17:5000/api/activities/all", {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
@@ -178,7 +178,7 @@ const UserActivity = () => {
                                 <td className="p-2 flex items-center gap-2">
                                     {a.userId?.profilePicture && (
                                         <img
-                                            src={`http://localhost:5000/uploads/profiles/${a.userId.profilePicture}`}
+                                            src={`http://54.173.216.17:5000/uploads/profiles/${a.userId.profilePicture}`}
                                             alt="avatar"
                                             className="w-8 h-8 rounded-full"
                                         />

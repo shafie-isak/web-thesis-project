@@ -19,7 +19,13 @@ const Userschema = new mongoose.Schema({
   level: { type: String, default: "Beginner" },
   badges: [{ type: String }],
   status: { type: String, default: 'active' },
+  resetOTP: { type: String },
+  resetOTPExpires: { type: Date },
+  otpVerified: {type: Boolean, default: false}
 }, { timestamps: true });
+
+
+
 
 const User = mongoose.model('User', Userschema);
 

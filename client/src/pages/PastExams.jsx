@@ -10,7 +10,7 @@ import PastExamsSkeleton from "../components/skeletons/PastExamsSkeleton";
 
 Modal.setAppElement("#root");
 
-const API_BASE_URL = "http://localhost:5000/api/pastexams";
+const API_BASE_URL = "http://54.173.216.17:5000/api/pastexams";
 const ITEMS_PER_PAGE = 9;
 
 const PastExams = () => {

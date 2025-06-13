@@ -46,7 +46,7 @@ const AddUserModal = ({ onClose, onAdded }) => {
     setSaving(true);
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/users/add-user',
+        'http://54.173.216.17:5000/api/users/add-user',
         formData,
         {
           headers: {

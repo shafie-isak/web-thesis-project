@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../utils/api";
 import axios from "axios";
 
@@ -43,7 +43,7 @@ const Login = () => {
       navigate("/dashboard");
 
 
-      await axios.post("http://localhost:5000/api/activities/log", {
+      await axios.post("http://54.173.216.17:5000/api/activities/log", {
         userId: data.user._id,
         type: "User",
         action: "Login",
@@ -100,7 +100,7 @@ const Login = () => {
               } placeholder-white/70 focus:outline-none focus:border-white/70`}
           />
 
-          <a className='text-white' href="#">Forget passsword</a>
+          <Link className='text-white' to="/forgot-password">Forget passsword</Link>
 
           <button
             type="submit"

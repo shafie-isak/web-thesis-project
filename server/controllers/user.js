@@ -5,6 +5,9 @@ import crypto from 'crypto';
 import { sendResetEmail } from '../utils/sendEmail.js';
 import XPLog from "../models/xp_log.js";
 import mongoose from 'mongoose';
+import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config();
 
 
 
@@ -318,7 +321,7 @@ export const requestPasswordReset = async (req, res) => {
   user.resetTokenExpires = Date.now() + 1000 * 60 * 15; // 15 minutes
   await user.save();
 
-  const resetLink = `http://localhost:5000/api/users/reset-password/${token}`;
+  const resetLink = `http://54.173.216.17:5000/api/users/reset-password/${token}`;
 
   // Send the email here:
   try {
@@ -330,24 +333,16 @@ export const requestPasswordReset = async (req, res) => {
 };
 
 
-export const resetPassword = async (req, res) => {
-  const { token } = req.params;
-  const { password } = req.body;
+export const resetPasswordWithOTP = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email, otpVerified: true });
+  if (!user) return res.status(400).json({ message: "OTP not verified" });
 
-  const user = await User.findOne({
-    resetToken: token,
-    resetTokenExpires: { $gt: Date.now() },
-  });
-
-  if (!user) return res.status(400).json({ message: "Invalid or expired token" });
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  user.password = hashedPassword;
-  user.resetToken = undefined;
-  user.resetTokenExpires = undefined;
-
+  user.password = await bcrypt.hash(password, 10);
+  user.otpVerified = false;
   await user.save();
-  res.status(200).json({ message: "Password reset successfully" });
+
+  res.status(200).json({ message: "Password reset successful" });
 };
 
 
@@ -391,3 +386,68 @@ export const getWeeklyXPSummary = async (req, res) => {
   }
 };
 
+export const sendResetOTP = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: "User not found" });
+
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  user.resetOTP = otp;
+  user.resetOTPExpires = Date.now() + 1000 * 60 * 10; // 10 minutes
+  await user.save();
+
+  // Send OTP via email
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+
+// ...existing code...
+await transporter.sendMail({
+  from: `"Elite Coders" <${process.env.EMAIL_USER}>`,
+  to: email,
+  subject: "Your OTP for Password Reset",
+  html: `
+    <div style="font-family: Arial, sans-serif; background: #f4f4f7; padding: 30px;">
+      <div style="max-width: 400px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); padding: 32px;">
+        <h2 style="color: #4B2AAD; text-align: center; margin-bottom: 24px;">Elite Coders</h2>
+        <h3 style="color: #333; text-align: center;">Password Reset OTP</h3>
+        <p style="font-size: 16px; color: #444; text-align: center;">
+          Use the following OTP to reset your password:
+        </p>
+        <div style="font-size: 32px; font-weight: bold; color: #4B2AAD; text-align: center; margin: 24px 0;">
+          ${otp}
+        </div>
+        <p style="font-size: 14px; color: #888; text-align: center;">
+          This code expires in <b>10 minutes</b>.
+        </p>
+        <hr style="margin: 32px 0; border: none; border-top: 1px solid #eee;">
+        <p style="font-size: 12px; color: #bbb; text-align: center;">
+          If you did not request this, please ignore this email.
+        </p>
+      </div>
+    </div>
+  `
+});
+
+  res.status(200).json({ message: "OTP sent to email" });
+
+};
+
+export const verifyResetOTP = async (req, res) => {
+const { email, otp } = req.body;
+const user = await User.findOne({ email, resetOTP: otp, resetOTPExpires: { $gt: Date.now() } });
+if (!user) return res.status(400).json({ message: "Invalid or expired OTP" });
+
+// Mark OTP as used (optional: clear it)
+user.resetOTP = undefined;
+user.resetOTPExpires = undefined;
+user.otpVerified = true;
+await user.save();
+
+res.status(200).json({ message: "OTP verified" });
+};

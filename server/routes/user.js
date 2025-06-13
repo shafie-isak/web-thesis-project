@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser,updateUserByAdmin,getUser, banUser, deleteUser, updateXP ,getWeeklyXPSummary, unlockBadge, loginUser, getCurrentUserProfile,requestPasswordReset, resetPassword, updateProfilePicture, getTopUsers } from '../controllers/user.js';
+import { createUser, updateUserByAdmin, getUser, banUser, deleteUser, updateXP, getWeeklyXPSummary, unlockBadge, loginUser, getCurrentUserProfile, requestPasswordReset, updateProfilePicture, getTopUsers, sendResetOTP, verifyResetOTP, resetPasswordWithOTP } from '../controllers/user.js';
 import upload from '../middleware/upload.js';
 import authMiddleware, { isAdmin } from '../middleware/authMiddleware.js';
 
@@ -11,15 +11,17 @@ router.post('/add-user', upload.single('profilePicture'), createUser);
 router.put('/:id/edit', authMiddleware, isAdmin, upload.single('profilePicture'), updateUserByAdmin);
 router.put('/:id/ban', authMiddleware, isAdmin, banUser);
 router.delete('/:id', authMiddleware, isAdmin, deleteUser);
-router.post('/update-xp',authMiddleware ,updateXP);
+router.post('/update-xp', authMiddleware, updateXP);
 router.get('/xp-summary/', authMiddleware, getWeeklyXPSummary);
 router.post('/unlock-badge', authMiddleware, unlockBadge);
 router.post('/login', loginUser);
 router.get('/profile', authMiddleware, getCurrentUserProfile);
 router.put('/update-profile-picture', authMiddleware, upload.single('profilePicture'), updateProfilePicture); // ✅ protected
 router.post('/request-reset', requestPasswordReset);
-router.post('/reset-password/:token', resetPassword);
 router.get('/top', authMiddleware, isAdmin, getTopUsers);
+router.post('/forgot-password/send-otp', sendResetOTP);
+router.post('/forgot-password/verify-otp', verifyResetOTP);
+router.post('/forgot-password/reset', resetPasswordWithOTP);
 
 router.put('/:id/ban', authMiddleware, isAdmin, async (req, res) => {
   try {
