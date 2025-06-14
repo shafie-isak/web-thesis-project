@@ -230,11 +230,11 @@ const Questions = () => {
   if (loading) return <QuestionsSkeleton />;
 
   return (
-    <div className="px-6 text-white">
+    <div className="px-6 py-4 text-white w-full max-w-full overflow-x-hidden">
       <h2 className="text-2xl font-bold text-white pb-3">Questions Bank</h2>
 
-      <div className="flex justify-between items-center mb-4 gap-3">
-        <div className="flex gap-3 flex-1">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div className="flex gap-3 min-w-0">
           <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 w-full max-w-sm">
             <FaSearch className="text-white/70 mr-2" />
             <input
@@ -267,7 +267,7 @@ const Questions = () => {
         </div>
       </div>
 
-      <div className="rounded-xl h-[70vh] overflow-y-auto border border-white/20">
+      <div className="rounded-xl h-[70vh] border border-white/20">
         <table className="w-full text-sm">
           <thead className="bg-purple-700 text-white">
             <tr>
@@ -302,7 +302,7 @@ const Questions = () => {
       </div>
 
       {modalOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
           <motion.div
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
