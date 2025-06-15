@@ -7,7 +7,7 @@ export const getQuestions = async (req, res) => {
         path: "chapter_id",
         populate: { path: "subject_id" }, // assumes chapters reference subject
       })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 }).limit(500);
 
     res.status(200).json({ questions });
   } catch (err) {

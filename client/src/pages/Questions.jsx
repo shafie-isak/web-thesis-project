@@ -42,10 +42,6 @@ const Questions = () => {
   const [saving, setSaving] = useState(false);
   const [filterSubject, setFilterSubject] = useState("");
   const [filterChapter, setFilterChapter] = useState("");
-
-
-console.log("selected subj: ", filterSubject);
-
   const loadQuestions = async () => {
     setLoading(true)
     try {
@@ -58,6 +54,8 @@ console.log("selected subj: ", filterSubject);
       setLoading(false)
     }
   };
+  // const data = await fetchQuestions();
+
 
   const loadSubjects = async () => {
     try {
