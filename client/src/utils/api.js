@@ -1,5 +1,5 @@
 import axios from 'axios'
-const API_BASE = "http://localhost:5000/api";
+const API_BASE = "http://54.173.216.17:5000/api";
 const token = localStorage.getItem("token");
 const headers = {
   Authorization: `Bearer ${token}`
@@ -86,6 +86,10 @@ export const fetchActivityStats = async () => {
 //Get All Chapters
 export const fetchChapters = async () => {
   const res = await axios.get(`${API_BASE}/chapters`, { headers: getAuthHeaders() });
+  return res.data.chapters;
+};
+export const fetchChaptersBySubject = async (id) => {
+  const res = await axios.get(`${API_BASE}/chapters/by-subject/${id}`, { headers: getAuthHeaders() });
   return res.data.chapters;
 };
 

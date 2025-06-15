@@ -6,6 +6,7 @@ import {
   deleteQuestion,
   fetchSubjects,
   fetchChapters,
+  fetchChaptersBySubject,
 } from "../utils/api";
 import {
   FaEdit,
@@ -43,7 +44,7 @@ const Questions = () => {
   const [filterChapter, setFilterChapter] = useState("");
 
 
-
+console.log("selected subj: ", filterSubject);
 
   const loadQuestions = async () => {
     setLoading(true)
@@ -67,20 +68,34 @@ const Questions = () => {
     }
   };
 
-  const loadChapters = async () => {
-    try {
-      const data = await fetchChapters();
-      setChapters(data);
-    } catch {
-      toast.error("Failed to load chapters");
-    }
-  };
+const loadChapters = async () => {
+  if (!filterSubject) return;
+  try {
+    const data = await fetchChaptersBySubject(filterSubject);
+    setChapters(data);
+  } catch {
+    toast.error("Failed to load chapters");
+  }
+};
+
 
   useEffect(() => {
     loadQuestions();
     loadSubjects();
     loadChapters();
   }, []);
+
+
+  useEffect(() => {
+  if (filterSubject) {
+    loadChapters();
+  } else {
+    setChapters([]);
+  }
+}, [filterSubject]);
+
+
+
 
   const openModal = (q = null) => {
     if (q) {
@@ -230,16 +245,16 @@ const Questions = () => {
   if (loading) return <QuestionsSkeleton />;
 
   return (
-    <div className="px-6 py-4 text-white w-full max-w-full overflow-x-hidden">
+    <div className="px-6 text-white">
       <h2 className="text-2xl font-bold text-white pb-3">Questions Bank</h2>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div className="flex gap-3 min-w-0">
-          <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2 w-full max-w-sm">
+      <div className="flex justify-between items-center mb-4 gap-3">
+        <div className="flex gap-3 flex-1">
+          <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2">
             <FaSearch className="text-white/70 mr-2" />
             <input
               type="text"
-              placeholder="Search by question or chapter..."
+              placeholder="Type here to search"
               onChange={(e) => setSearchTerm(e.target.value)}
               className="bg-transparent focus:outline-none text-sm placeholder-white/50 w-full"
             />
@@ -252,7 +267,7 @@ const Questions = () => {
             <option className="text-black/50" value="">All Subjects</option>
             {subjects.map(sub => <option className="text-black/75" key={sub._id} value={sub._id}>{sub.subject_name}</option>)}
           </select>
-          <select onChange={(e) => setFilterChapter(e.target.value)} className="px-4 py-2 bg-white/10 border border-white/20 rounded-full text-white focus:outline-none max-w[200px] focus:border-white/50">
+          <select onChange={(e) => setFilterChapter(e.target.value)} className="px-4 py-2 bg-white/10 border border-white/20 rounded-full text-white focus:outline-none focus:border-white/50">
             <option className="text-black/50" value="">All Chapters</option>
             {chapters.map(ch => <option className="text-black/75" key={ch._id} value={ch._id}>{ch.chapter_name}</option>)}
           </select>
@@ -267,7 +282,7 @@ const Questions = () => {
         </div>
       </div>
 
-      <div className="rounded-xl h-[70vh] border border-white/20">
+      <div className="rounded-xl h-[70vh] overflow-y-auto border border-white/20">
         <table className="w-full text-sm">
           <thead className="bg-purple-700 text-white">
             <tr>
@@ -302,7 +317,7 @@ const Questions = () => {
       </div>
 
       {modalOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
           <motion.div
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}

@@ -32,7 +32,7 @@ const DashboardLayout = () => {
     <div className="flex min-h-screen"
          style={{ background: 'radial-gradient(at center, #7A4DDF, #3B2A8E)' }}>
       <Sidebar />
-      <div className="flex-1 p-4 overflow-x-hidden min-w-0">
+      <div className="flex-1 flex flex-col">
         <Topbar />
         <Outlet />
       </div>
