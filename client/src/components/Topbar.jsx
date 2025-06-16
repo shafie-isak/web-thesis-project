@@ -30,7 +30,7 @@ const Topbar = () => {
     if (selectedFile) data.append("profilePicture", selectedFile);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${user._id}/edit`, {
+      const res = await fetch(`${process.env.API_URL}/api/users/${user._id}/edit`, {
         method: "PUT",
         headers: { Authorization: `Bearer ${token}` },
         body: data,
@@ -71,7 +71,7 @@ const Topbar = () => {
           className="rounded-full border-2 border-white/50 w-full h-full object-cover"
           src={
             user?.profilePicture
-              ? `http://localhost:5000/uploads/profiles/${user.profilePicture}`
+              ? `${process.env.API_URL}/uploads/profiles/${user.profilePicture}`
               : "https://avatars.dicebear.com/api/initials/" + (user?.name || "User") + ".svg"
           }
           alt="profile"
@@ -99,7 +99,7 @@ const Topbar = () => {
                       selectedFile
                         ? URL.createObjectURL(selectedFile)
                         : user?.profilePicture
-                          ? `http://localhost:5000/uploads/profiles/${user.profilePicture}`
+                          ? `${process.env.API_URL}/uploads/profiles/${user.profilePicture}`
                           : "https://avatars.dicebear.com/api/initials/" + (user?.name || "User") + ".svg"
                     }
                     alt="Profile"

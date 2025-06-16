@@ -12,7 +12,7 @@ const DashboardLayout = () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await fetch("http://localhost:5000/api/users/profile", {
+      const res = await fetch(`${process.env.API_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
