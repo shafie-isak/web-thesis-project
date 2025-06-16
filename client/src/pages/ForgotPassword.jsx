@@ -13,7 +13,7 @@ const ForgotPassword = () => {
     setError("");
     setLoading(true);
     try {
-      await axios.post("http://54.173.216.17:5000/api/users/forgot-password/send-otp", { email });
+      await axios.post("http://localhost:5000/api/users/forgot-password/send-otp", { email });
       navigate("/verify-otp", { state: { email } });
     } catch (err) {
       setError(err.response?.data?.message || "Failed to send OTP");

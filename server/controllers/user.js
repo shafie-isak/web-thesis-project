@@ -321,7 +321,7 @@ export const requestPasswordReset = async (req, res) => {
   user.resetTokenExpires = Date.now() + 1000 * 60 * 15; // 15 minutes
   await user.save();
 
-  const resetLink = `http://54.173.216.17:5000/api/users/reset-password/${token}`;
+  const resetLink = `http://localhost:5000/api/users/reset-password/${token}`;
 
   // Send the email here:
   try {

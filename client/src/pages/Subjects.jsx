@@ -33,7 +33,7 @@ const Subjects = () => {
 
     const fetchSubjects = async () => {
         try {
-            const res = await axios.get("http://54.173.216.17:5000/api/subjects", {
+            const res = await axios.get("http://localhost:5000/api/subjects", {
                 headers,
             });
             setSubjects(res.data.subjects);
@@ -79,7 +79,7 @@ const Subjects = () => {
         try {
             if (currentSubject) {
                 await axios.put(
-                    `http://54.173.216.17:5000/api/subjects/${currentSubject._id}`,
+                    `http://localhost:5000/api/subjects/${currentSubject._id}`,
                     formData,
                     { headers }
                 );
@@ -92,7 +92,7 @@ const Subjects = () => {
                 });
             } else {
                 const res = await axios.post(
-                    `http://54.173.216.17:5000/api/subjects`,
+                    `http://localhost:5000/api/subjects`,
                     formData,
                     { headers }
                 );
@@ -143,7 +143,7 @@ const Subjects = () => {
                 });
 
                 try {
-                    const res = await axios.delete(`http://54.173.216.17:5000/api/subjects/${id}`, {
+                    const res = await axios.delete(`http://localhost:5000/api/subjects/${id}`, {
                         headers,
                     });
 

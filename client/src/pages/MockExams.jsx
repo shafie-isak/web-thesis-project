@@ -32,7 +32,7 @@ const MockExams = () => {
 
   const loadExams = async () => {
     try {
-      const res = await axios.get("http://54.173.216.17:5000/api/mockexams", { headers });
+      const res = await axios.get("http://localhost:5000/api/mockexams", { headers });
       setExams(res.data);
     } catch (err) {
       console.error("Failed to load mock exams", err);
@@ -41,7 +41,7 @@ const MockExams = () => {
 
   const loadSubjects = async () => {
     try {
-      const res = await axios.get("http://54.173.216.17:5000/api/subjects", { headers });
+      const res = await axios.get("http://localhost:5000/api/subjects", { headers });
       setSubjects(res.data.subjects || []);
     } catch (err) {
       console.error("Failed to load subjects", err);
@@ -90,7 +90,7 @@ const MockExams = () => {
       const baseTitle = `Mock Exam - ${subject.subject_name}`;
 
       // Step 2: Get all existing exams
-      const res = await axios.get("http://54.173.216.17:5000/api/mockexams", { headers });
+      const res = await axios.get("http://localhost:5000/api/mockexams", { headers });
       const allExams = res.data;
 
       // Step 3: Filter exams that match this baseTitle or baseTitle (n)
@@ -110,7 +110,7 @@ const MockExams = () => {
       }
 
       // Step 4: Send POST request with unique title
-      await axios.post("http://54.173.216.17:5000/api/mockexams", {
+      await axios.post("http://localhost:5000/api/mockexams", {
         subject_id,
         numberOfQuestions: numQuestions,
         timeLimit,
@@ -135,7 +135,7 @@ const MockExams = () => {
 
     setUpdating(true);
     try {
-      await axios.put(`http://54.173.216.17:5000/api/mockexams/${editData._id}`, editData, { headers });
+      await axios.put(`http://localhost:5000/api/mockexams/${editData._id}`, editData, { headers });
       Swal.fire("Updated", "Mock exam updated", "success");
       loadExams();
       setEditData(null);
@@ -153,7 +153,7 @@ const MockExams = () => {
 
     setDeletingId(id);
     try {
-      await axios.delete(`http://54.173.216.17:5000/api/mockexams/${id}`, { headers });
+      await axios.delete(`http://localhost:5000/api/mockexams/${id}`, { headers });
       Swal.fire("Deleted", "Mock exam removed", "success");
       loadExams();
     } catch {

@@ -20,7 +20,7 @@ const VerifyOTP = () => {
     setError("");
     setLoading(true);
     try {
-      await axios.post("http://54.173.216.17:5000/api/users/forgot-password/verify-otp", { email, otp });
+      await axios.post("http://localhost:5000/api/users/forgot-password/verify-otp", { email, otp });
       navigate("/reset-password", { state: { email } });
     } catch (err) {
       setError(err.response?.data?.message || "Invalid OTP");

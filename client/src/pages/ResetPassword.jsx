@@ -29,7 +29,7 @@ const ResetPassword = () => {
     }
     setLoading(true);
     try {
-      await axios.post("http://54.173.216.17:5000/api/users/forgot-password/reset", { email, password });
+      await axios.post("http://localhost:5000/api/users/forgot-password/reset", { email, password });
       navigate("/login");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to reset password");
