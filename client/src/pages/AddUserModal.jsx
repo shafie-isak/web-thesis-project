@@ -46,7 +46,7 @@ const AddUserModal = ({ onClose, onAdded }) => {
     setSaving(true);
     try {
       const response = await axios.post(
-        `${process.env.API_URL}/api/users/add-user`,
+        `${process.env.REACT_APP_API_URL}/api/users/add-user`,
         formData,
         {
           headers: {

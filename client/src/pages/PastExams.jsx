@@ -10,7 +10,7 @@ import PastExamsSkeleton from "../components/skeletons/PastExamsSkeleton";
 
 Modal.setAppElement("#root");
 
-const API_BASE_URL = `${process.env.API_URL}/api/pastexams`;
+const API_BASE_URL = `${process.env.REACT_APP_API_URL}/api/pastexams`;
 const ITEMS_PER_PAGE = 9;
 
 const PastExams = () => {
@@ -252,7 +252,7 @@ const PastExams = () => {
                       <td className="p-3">{exam.category}</td>
                       <td className="p-3">
                         <button
-                          onClick={() => setSelectedPdf(`${process.env.API_URL}${exam.pdfUrl}`)}
+                          onClick={() => setSelectedPdf(`${process.env.REACT_APP_API_URL}${exam.pdfUrl}`)}
                           className="flex items-center gap-1 text-blue-400 hover:text-blue-300 transition-colors"
                         >
                           <FaFilePdf /> View

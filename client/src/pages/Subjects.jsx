@@ -33,7 +33,7 @@ const Subjects = () => {
 
     const fetchSubjects = async () => {
         try {
-            const res = await axios.get(`${process.env.API_URL}/api/subjects`, {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/subjects`, {
                 headers,
             });
             setSubjects(res.data.subjects);
@@ -79,7 +79,7 @@ const Subjects = () => {
         try {
             if (currentSubject) {
                 await axios.put(
-                    `${process.env.API_URL}/api/subjects/${currentSubject._id}`,
+                    `${process.env.REACT_APP_API_URL}/api/subjects/${currentSubject._id}`,
                     formData,
                     { headers }
                 );
@@ -92,7 +92,7 @@ const Subjects = () => {
                 });
             } else {
                 const res = await axios.post(
-                    `${process.env.API_URL}/api/subjects`,
+                    `${process.env.REACT_APP_API_URL}/api/subjects`,
                     formData,
                     { headers }
                 );
@@ -143,7 +143,7 @@ const Subjects = () => {
                 });
 
                 try {
-                    const res = await axios.delete(`${process.env.API_URL}/api/subjects/${id}`, {
+                    const res = await axios.delete(`${process.env.REACT_APP_API_URL}/api/subjects/${id}`, {
                         headers,
                     });
 

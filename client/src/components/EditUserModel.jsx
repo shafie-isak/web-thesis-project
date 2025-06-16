@@ -32,7 +32,7 @@ const EditUserModal = ({ user, onClose, onUpdated }) => {
     setErrors({});
     try {
       const response = await axios.put(
-        `${process.env.API_URL}/${user._id}/edit`,
+        `${process.env.REACT_APP_API_URL}/${user._id}/edit`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

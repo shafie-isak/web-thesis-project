@@ -27,7 +27,7 @@ const UserActivity = () => {
 
     useEffect(() => {
         const enableSocket = () => {
-            const socket = io(`${process.env.API_URL}`);
+            const socket = io(`${process.env.REACT_APP_API_URL}`);
 
             socket.on('connect', () => {
                 console.log("🔌 Connected to socket:", socket.id);
@@ -57,7 +57,7 @@ const UserActivity = () => {
 
     const fetchActivities = async () => {
         try {
-            const res = await axios.get(`${process.env.API_URL}/api/activities/all`, {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/activities/all`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
@@ -178,7 +178,7 @@ const UserActivity = () => {
                                 <td className="p-2 flex items-center gap-2">
                                     {a.userId?.profilePicture && (
                                         <img
-                                            src={`${process.env.API_URL}/uploads/profiles/${a.userId.profilePicture}`}
+                                            src={`${process.env.REACT_APP_API_URL}/uploads/profiles/${a.userId.profilePicture}`}
                                             alt="avatar"
                                             className="w-8 h-8 rounded-full"
                                         />

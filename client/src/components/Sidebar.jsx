@@ -54,7 +54,7 @@ const Sidebar = () => {
         const user = JSON.parse(localStorage.getItem("user"));
 
         try {
-          await fetch(`${process.env.API_URL}/api/activities/log`, {
+          await fetch(`${process.env.REACT_APP_API_URL}/api/activities/log`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

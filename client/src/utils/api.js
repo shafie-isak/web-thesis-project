@@ -1,5 +1,5 @@
 import axios from 'axios'
-const API_BASE = process.env.API_URL;
+const API_BASE = process.env.REACT_APP_API_URL;
 const token = localStorage.getItem("token");
 const headers = {
   Authorization: `Bearer ${token}`
@@ -12,7 +12,7 @@ const getAuthHeaders = () => ({
 
 export const loginUser = async (email, password) => {
   try {
-    const res = await fetch(`${API_BASE}/users/login`, {
+    const res = await fetch(`${API_BASE}/api/users/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -33,7 +33,7 @@ export const loginUser = async (email, password) => {
 
 
 export const fetchDashboardData = async (token) => {
-  const res = await fetch(`${API_BASE}/admin/dashboard-summary`, {
+  const res = await fetch(`${API_BASE}/api/admin/dashboard-summary`, {
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -44,7 +44,7 @@ export const fetchDashboardData = async (token) => {
 
 export const getTopUsers = async () => {
   const token = localStorage.getItem("token");
-  const res = await fetch(`${API_BASE}/users/top`, {
+  const res = await fetch(`${API_BASE}/api/users/top`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) throw new Error("Failed to fetch top users");
@@ -52,7 +52,7 @@ export const getTopUsers = async () => {
 };
 
 export const getUsers = async () => {
-  const res = await fetch(`${API_BASE}/users/all`, {
+  const res = await fetch(`${API_BASE}/api/users/all`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -61,20 +61,20 @@ export const getUsers = async () => {
   return data;
 };
 
-export const updateUser = (id, data) => axios.put(`${API_BASE}/users/${id}`, data, { headers });
-export const deleteUser = (id) => axios.delete(`${API_BASE}/users/${id}`, { headers });
-export const banUser = (id) => axios.put(`${API_BASE}/users/${id}/ban`, {}, { headers });
+export const updateUser = (id, data) => axios.put(`${API_BASE}/api/users/${id}`, data, { headers });
+export const deleteUser = (id) => axios.delete(`${API_BASE}/api/users/${id}`, { headers });
+export const banUser = (id) => axios.put(`${API_BASE}/api/users/${id}/ban`, {}, { headers });
 
 
 
 // User Activities API
 export const fetchAllActivities = async () => {
-  const res = await axios.get(`${API_BASE}/activities/all`, { headers: getAuthHeaders() });
+  const res = await axios.get(`${API_BASE}/api/activities/all`, { headers: getAuthHeaders() });
   return res.data.activities;
 };
 
 export const fetchActivityStats = async () => {
-  const res = await axios.get(`${API_BASE}/activities/stats/daily`, { headers: getAuthHeaders() });
+  const res = await axios.get(`${API_BASE}/api/activities/stats/daily`, { headers: getAuthHeaders() });
   return res.data;
 };
 
@@ -85,35 +85,35 @@ export const fetchActivityStats = async () => {
 
 //Get All Chapters
 export const fetchChapters = async () => {
-  const res = await axios.get(`${API_BASE}/chapters`, { headers: getAuthHeaders() });
+  const res = await axios.get(`${API_BASE}/api/chapters`, { headers: getAuthHeaders() });
   return res.data.chapters;
 };
 export const fetchChaptersBySubject = async (id) => {
-  const res = await axios.get(`${API_BASE}/chapters/by-subject/${id}`, { headers: getAuthHeaders() });
+  const res = await axios.get(`${API_BASE}/api/chapters/by-subject/${id}`, { headers: getAuthHeaders() });
   return res.data.chapters;
 };
 
 ////Get All Subjects
 export const fetchSubjects = async () => {
-  const res = await axios.get(`${API_BASE}/subjects`, { headers: getAuthHeaders() });
+  const res = await axios.get(`${API_BASE}/api/subjects`, { headers: getAuthHeaders() });
   return res.data.subjects;
 };
 
 //Add Chapter
 export const createChapter = async (data) => {
-  const res = await axios.post(`${API_BASE}/chapters`, data, { headers: getAuthHeaders() });
+  const res = await axios.post(`${API_BASE}/api/chapters`, data, { headers: getAuthHeaders() });
   return res.data;
 };
 
 //Update Chapter
 export const updateChapter = async (id, data) => {
-  const res = await axios.put(`${API_BASE}/chapters/${id}`, data, { headers: getAuthHeaders() });
+  const res = await axios.put(`${API_BASE}/api/chapters/${id}`, data, { headers: getAuthHeaders() });
   return res.data;
 };
 
 //Delete Chapter
 export const deleteChapter = async (id) => {
-  const res = await axios.delete(`${API_BASE}/chapters/${id}`, { headers: getAuthHeaders() });
+  const res = await axios.delete(`${API_BASE}/api/chapters/${id}`, { headers: getAuthHeaders() });
   return res.data;
 };
 
@@ -123,25 +123,25 @@ export const deleteChapter = async (id) => {
 
 //Get all Questions
 export const fetchQuestions = async () => {
-  const res = await axios.get(`${API_BASE}/questions`, { headers: getAuthHeaders() });
+  const res = await axios.get(`${API_BASE}/api/questions`, { headers: getAuthHeaders() });
   return res.data.questions;
 };
 
 //Add question
 export const createQuestion = async (data) => {
-  const res = await axios.post(`${API_BASE}/questions`, data, { headers: getAuthHeaders() });
+  const res = await axios.post(`${API_BASE}/api/questions`, data, { headers: getAuthHeaders() });
   return res.data;
 };
 
 //Update question
 export const updateQuestion = async (id, data) => {
-  const res = await axios.put(`${API_BASE}/questions/${id}`, data, { headers: getAuthHeaders() });
+  const res = await axios.put(`${API_BASE}/api/questions/${id}`, data, { headers: getAuthHeaders() });
   return res.data;
 };
 
 //Delete question
 export const deleteQuestion = async (id) => {
-  const res = await axios.delete(`${API_BASE}/questions/${id}`, { headers: getAuthHeaders() });
+  const res = await axios.delete(`${API_BASE}/api/questions/${id}`, { headers: getAuthHeaders() });
   return res.data;
 };
 
@@ -151,19 +151,19 @@ export const deleteQuestion = async (id) => {
 
 // Get all mock exams
 export const fetchMockExams = async () => {
-  const res = await axios.get(`${API_BASE}/mockexams`, { headers: getAuthHeaders() });
+  const res = await axios.get(`${API_BASE}/api/mockexams`, { headers: getAuthHeaders() });
   return res.data;
 };
 
 // Create a new mock exam
 export const createMockExam = async (data) => {
-  const res = await axios.post(`${API_BASE}/mockexams`, data, { headers: getAuthHeaders() });
+  const res = await axios.post(`${API_BASE}/api/mockexams`, data, { headers: getAuthHeaders() });
   return res.data;
 };
 
 // Delete a mock exam
 export const deleteMockExam = async (id) => {
-  const res = await axios.delete(`${API_BASE}/mockexams/${id}`, { headers: getAuthHeaders() });
+  const res = await axios.delete(`${API_BASE}/api/mockexams/${id}`, { headers: getAuthHeaders() });
   return res.data;
 };
 
@@ -173,33 +173,33 @@ export const deleteMockExam = async (id) => {
 
 // Get all Challenges
 export const fetchChallenges = async () => {
-  const res = await axios.get(`${API_BASE}/challenges`, { headers: getAuthHeaders() });
+  const res = await axios.get(`${API_BASE}/api/challenges`, { headers: getAuthHeaders() });
   return res.data;
 };
 
 
 // Create a new challenge
 export const createChallenge = async (data) => {
-  const res = await axios.post(`${API_BASE}/challenges`, data, { headers: getAuthHeaders() });
+  const res = await axios.post(`${API_BASE}/api/challenges`, data, { headers: getAuthHeaders() });
   return res.data;
 };
 
 //Update a challenge
 export const updateChallenge = async (id, data) => {
-  const res = await axios.put(`${API_BASE}/challenges/${id}`, data, { headers: getAuthHeaders() });
+  const res = await axios.put(`${API_BASE}/api/challenges/${id}`, data, { headers: getAuthHeaders() });
   return res.data;
 };
 
 //Delete a challenge
 export const deleteChallenge = async (id) => {
-  const res = await axios.delete(`${API_BASE}/challenges/${id}`, { headers: getAuthHeaders() });
+  const res = await axios.delete(`${API_BASE}/api/challenges/${id}`, { headers: getAuthHeaders() });
   return res.data;
 };
 
 
 // utils/api.js
 export const fetchChallengeStats = async () => {
-  const res = await fetch(`${process.env.API_URL}/api/challenges/stats`);
+  const res = await fetch(`${process.env.REACT_APP_API_URL}/api/challenges/stats`);
   if (!res.ok) {
     throw new Error("Failed to fetch challenge stats");
   }

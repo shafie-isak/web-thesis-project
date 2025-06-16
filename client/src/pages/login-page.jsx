@@ -43,7 +43,7 @@ const Login = () => {
       navigate("/dashboard");
 
 
-      await axios.post(`${process.env.API_URL}/api/activities/log`, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/activities/log`, {
         userId: data.user._id,
         type: "User",
         action: "Login",
