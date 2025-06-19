@@ -1,4 +1,5 @@
 import Question from "../models/questions.js";
+import Chapter from "../models/chapters.js";
 
 export const getQuestions = async (req, res) => {
   try {
@@ -11,12 +12,18 @@ export const getQuestions = async (req, res) => {
     const filter = {};
 
     if (subjectId) {
-      filter['chapter_id.subject_id'] = subjectId;
+      // First: find all chapters of this subject
+      const chaptersOfSubject = await Chapter.find({ subject_id: subjectId }, '_id');
+      const chapterIds = chaptersOfSubject.map(ch => ch._id);
+
+      // Now filter questions with those chapters
+      filter['chapter_id'] = { $in: chapterIds };
     }
 
     if (chapterId) {
       filter['chapter_id'] = chapterId;
     }
+
 
     const questions = await Question.find(filter)
       .populate({
