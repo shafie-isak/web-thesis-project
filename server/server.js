@@ -23,6 +23,10 @@ import path from 'path';
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
+app.use(cors({ 
+    origin: 'http://localhost:3000',
+    credentials: true 
+}));
 const io = new Server(server, {
   cors: { origin: '*' }
 });
@@ -37,7 +41,6 @@ app.set('io', io);
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
-app.use(cors());
 connectDB();
 
 //Generate daily challenge quiz
