@@ -5,9 +5,9 @@ export const getQuestions = async (req, res) => {
     const questions = await Question.find()
       .populate({
         path: "chapter_id",
-        populate: { path: "subject_id" }, // assumes chapters reference subject
+        populate: { path: "subject_id" }, 
       })
-      .sort({ createdAt: -1 }).limit(500);
+      .sort({ createdAt: -1 }).limit(100);
 
     res.status(200).json({ questions });
   } catch (err) {

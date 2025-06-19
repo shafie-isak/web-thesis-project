@@ -7,11 +7,12 @@ import { useNavigate } from "react-router-dom";
 const DashboardLayout = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchStatus = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
+useEffect(() => {
+  const fetchStatus = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
+    try {
       const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -22,11 +23,17 @@ const DashboardLayout = () => {
           localStorage.clear();
           navigate("/banned");
         }
+      } else {
+        console.error("Failed to fetch user profile: ", res.status);
       }
-    };
+    } catch (err) {
+      console.error("Fetch error:", err.message);
+    }
+  };
 
-    fetchStatus();
-  }, [navigate]);
+  fetchStatus();
+}, [navigate]);
+
 
   return (
     <div className="flex min-h-screen"
