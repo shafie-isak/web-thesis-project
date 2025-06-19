@@ -11,18 +11,16 @@ export const getQuestions = async (req, res) => {
 
     const filter = {};
 
-    if (subjectId) {
-      // First: find all chapters of this subject
+    if (chapterId) {
+      // If chapter selected — just filter by chapter
+      filter['chapter_id'] = chapterId;
+    } else if (subjectId) {
+      // Else — filter by all chapters of subject
       const chaptersOfSubject = await Chapter.find({ subject_id: subjectId }, '_id');
       const chapterIds = chaptersOfSubject.map(ch => ch._id);
-
-      // Now filter questions with those chapters
       filter['chapter_id'] = { $in: chapterIds };
     }
 
-    if (chapterId) {
-      filter['chapter_id'] = chapterId;
-    }
 
 
     const questions = await Question.find(filter)
