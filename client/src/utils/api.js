@@ -122,10 +122,22 @@ export const deleteChapter = async (id) => {
 //Questions API calls Starts hee
 
 //Get all Questions
-export const fetchQuestions = async () => {
-  const res = await axios.get(`${API_BASE}/api/questions`, { headers: getAuthHeaders() });
-  return res.data.questions;
+export const fetchQuestions = async ({ subjectId, chapterId, page = 1, limit = 50 }) => {
+  const params = {};
+
+  if (subjectId) params.subject = subjectId;
+  if (chapterId) params.chapter = chapterId;
+  params.page = page;
+  params.limit = limit;
+
+  const res = await axios.get(`${API_BASE}/api/questions`, {
+    headers: getAuthHeaders(),
+    params
+  });
+
+  return res.data;
 };
+
 
 //Add question
 export const createQuestion = async (data) => {
