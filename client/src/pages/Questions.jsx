@@ -34,13 +34,31 @@ const Questions = () => {
   const [current, setCurrent] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [sortType, setSortType] = useState("difficulty");
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [filterSubject, setFilterSubject] = useState("");
-  const [filterChapter, setFilterChapter] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+
+  // ✅ persist subject + chapter using localStorage
+  const savedSubject = localStorage.getItem("filterSubject") || "";
+  const savedChapter = localStorage.getItem("filterChapter") || "";
+
+  const [filterSubject, setFilterSubject] = useState(savedSubject);
+  const [filterChapter, setFilterChapter] = useState(savedChapter);
+
+  const handleSubjectChange = (value) => {
+    setFilterSubject(value);
+    localStorage.setItem("filterSubject", value);
+
+    setFilterChapter("");
+    localStorage.setItem("filterChapter", "");
+  };
+
+
+  const handleChapterChange = (value) => {
+    setFilterChapter(value);
+    localStorage.setItem("filterChapter", value);
+  };
 
   const loadQuestions = async (pageToLoad = 1) => {
     setLoading(true);
@@ -85,25 +103,24 @@ const Questions = () => {
     }
   };
 
-  // On first load — only load subjects + chapters
   useEffect(() => {
     loadSubjects();
     loadChapters();
   }, []);
 
-  // When subject changes → load chapters + reset questions
   useEffect(() => {
     if (filterSubject) {
       loadChapters();
     } else {
       setChapters([]);
     }
+
     setPage(1);
+    setQuestions([]);
     setHasMore(true);
     loadQuestions(1);
   }, [filterSubject, filterChapter]);
 
-  // On scroll page load more
   useEffect(() => {
     if (page > 1) {
       loadQuestions(page);
@@ -251,9 +268,8 @@ const Questions = () => {
         .join("\n");
 
     const now = new Date();
-    const filename = `questions_filtered_${now.getFullYear()}_${
-      now.getMonth() + 1
-    }_${now.getDate()}.csv`;
+    const filename = `questions_filtered_${now.getFullYear()}_${now.getMonth() + 1
+      }_${now.getDate()}.csv`;
 
     const link = document.createElement("a");
     link.setAttribute("href", encodeURI(csvContent));
@@ -269,7 +285,6 @@ const Questions = () => {
     <div className="px-6 text-white">
       <h2 className="text-2xl font-bold text-white pb-3">Questions Bank</h2>
 
-      {/* Filters */}
       <div className="flex justify-between items-center mb-4 gap-3">
         <div className="flex gap-3 flex-1">
           <div className="flex items-center bg-white/10 text-white border border-white/30 rounded-full px-4 py-2">
@@ -282,7 +297,8 @@ const Questions = () => {
             />
           </div>
           <select
-            onChange={(e) => setFilterSubject(e.target.value)}
+            value={filterSubject}
+            onChange={(e) => handleSubjectChange(e.target.value)}
             className="px-4 py-2 bg-white/10 border border-white/20 rounded-full text-white focus:outline-none focus:border-white/50"
           >
             <option className="text-black/50" value="">
@@ -299,7 +315,8 @@ const Questions = () => {
             ))}
           </select>
           <select
-            onChange={(e) => setFilterChapter(e.target.value)}
+            value={filterChapter}
+            onChange={(e) => handleChapterChange(e.target.value)}
             className="px-4 py-2 bg-white/10 border border-white/20 rounded-full text-white focus:outline-none focus:border-white/50"
           >
             <option className="text-black/50" value="">
@@ -328,7 +345,6 @@ const Questions = () => {
         </div>
       </div>
 
-      {/* Questions Table */}
       <div
         className="rounded-xl h-[70vh] overflow-y-auto border border-white/20"
         onScroll={handleScroll}
@@ -380,8 +396,6 @@ const Questions = () => {
           </tbody>
         </table>
       </div>
-
-      {/* Modal remains the same — no change */}
     </div>
   );
 };
