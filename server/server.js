@@ -23,10 +23,7 @@ import path from 'path';
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
-app.use(cors({ 
-    origin: 'http://localhost:3000',
-    credentials: true 
-}));
+app.use(cors({ origin: '*'}));
 const io = new Server(server, {
   cors: { origin: '*' }
 });
