@@ -32,7 +32,7 @@ const MockExams = () => {
 
   const loadExams = async () => {
     try {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/mockexams`, { headers });
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/mockexams`, { headers: { Authorization: `Bearer ${token}` } });
       setExams(res.data);
     } catch (err) {
       console.error("Failed to load mock exams", err);
@@ -163,7 +163,7 @@ const MockExams = () => {
     }
   };
 
-  if(loading) return <MockExamsSkeleton/>
+  if (loading) return <MockExamsSkeleton />
 
   return (
     <div className="p-6 text-white">
@@ -197,91 +197,91 @@ const MockExams = () => {
       </div>
 
 
-        <div>
-          <div className="rounded-xl ma-h-[67vh] border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden overflow-y-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-purple-700">
-                <tr>
-                  <th className="text-left p-3">Title</th>
-                  <th className="text-left p-3">Subject</th>
-                  <th className="text-left p-3">Time Limit (s)</th>
-                  <th className="text-left p-3">Questions</th>
-                  <th className="text-left p-3">Created</th>
-                  <th className="text-center p-3">Actions</th>
+      <div>
+        <div className="rounded-xl ma-h-[67vh] border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden overflow-y-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-purple-700">
+              <tr>
+                <th className="text-left p-3">Title</th>
+                <th className="text-left p-3">Subject</th>
+                <th className="text-left p-3">Time Limit (s)</th>
+                <th className="text-left p-3">Questions</th>
+                <th className="text-left p-3">Created</th>
+                <th className="text-center p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginated.map((mock) => (
+                <tr key={mock._id} className="border-t border-white/10 hover:bg-white/5">
+                  <td className="p-3">{mock.title}</td>
+                  <td className="p-3">{mock.subject_id?.subject_name}</td>
+                  <td className="p-3">{mock.timeLimit}s</td>
+                  <td className="p-3">{mock.question_ids.length}</td>
+                  <td className="p-3">{new Date(mock.createdAt).toLocaleDateString()}</td>
+                  <td className="p-3 flex justify-center items-center gap-2">
+                    <button
+                      onClick={() => setEditData(mock)}
+                      className="p-2 bg-blue-600 hover:bg-blue-700 rounded"
+                    >
+                      <FaEdit />
+                    </button> {deletingId === mock._id ? <div className="flex justify-center items-center">
+                      <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-red-500"></div>
+                    </div> : <button
+                      onClick={() => handleDelete(mock._id)}
+                      className="p-2 bg-red-600 hover:bg-red-700 rounded disabled:opacity-50"
+                      disabled={deletingId === mock._id}
+                    >
+                      <FaTrash />
+                    </button>}
+
+
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {paginated.map((mock) => (
-                  <tr key={mock._id} className="border-t border-white/10 hover:bg-white/5">
-                    <td className="p-3">{mock.title}</td>
-                    <td className="p-3">{mock.subject_id?.subject_name}</td>
-                    <td className="p-3">{mock.timeLimit}s</td>
-                    <td className="p-3">{mock.question_ids.length}</td>
-                    <td className="p-3">{new Date(mock.createdAt).toLocaleDateString()}</td>
-                    <td className="p-3 flex justify-center items-center gap-2">
-                      <button
-                        onClick={() => setEditData(mock)}
-                        className="p-2 bg-blue-600 hover:bg-blue-700 rounded"
-                      >
-                        <FaEdit />
-                      </button> {deletingId === mock._id ? <div className="flex justify-center items-center">
-                        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-red-500"></div>
-                      </div> : <button
-                        onClick={() => handleDelete(mock._id)}
-                        className="p-2 bg-red-600 hover:bg-red-700 rounded disabled:opacity-50"
-                        disabled={deletingId === mock._id}
-                      >
-                        <FaTrash />
-                      </button>}
-
-
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {paginated.length === 0 && (
-                <div className="bg-white/10 rounded-xl p-8 text-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-white/50 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <h3 className="text-xl font-medium text-white/50 mb-2">No Mock Exams found</h3>
-                  <p className="text-white/50 ">Try adjusting your search or create a new mock exam</p>
-                </div>
-              )}
-          </div>
-
-
-          {filtered.length > itemsPerPage && (
-            <div className="flex items-center justify-center mt-4 gap-4 text-white">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="px-4 py-1 bg-purple-700 rounded disabled:opacity-50"
-              >
-                Previous
-              </button>
-
-              <span>
-                Page {currentPage} of {Math.ceil(filtered.length / itemsPerPage)}
-              </span>
-
-              <button
-                onClick={() =>
-                  setCurrentPage((prev) =>
-                    Math.min(prev + 1, Math.ceil(filtered.length / itemsPerPage))
-                  )
-                }
-                disabled={currentPage === Math.ceil(filtered.length / itemsPerPage)}
-                className="px-4 py-1 bg-purple-700 rounded disabled:opacity-50"
-              >
-                Next
-              </button>
+              ))}
+            </tbody>
+          </table>
+          {paginated.length === 0 && (
+            <div className="bg-white/10 rounded-xl p-8 text-center">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-white/50 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="text-xl font-medium text-white/50 mb-2">No Mock Exams found</h3>
+              <p className="text-white/50 ">Try adjusting your search or create a new mock exam</p>
             </div>
           )}
         </div>
 
-        
+
+        {filtered.length > itemsPerPage && (
+          <div className="flex items-center justify-center mt-4 gap-4 text-white">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className="px-4 py-1 bg-purple-700 rounded disabled:opacity-50"
+            >
+              Previous
+            </button>
+
+            <span>
+              Page {currentPage} of {Math.ceil(filtered.length / itemsPerPage)}
+            </span>
+
+            <button
+              onClick={() =>
+                setCurrentPage((prev) =>
+                  Math.min(prev + 1, Math.ceil(filtered.length / itemsPerPage))
+                )
+              }
+              disabled={currentPage === Math.ceil(filtered.length / itemsPerPage)}
+              className="px-4 py-1 bg-purple-700 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
+
+
       {/* Create Form */}
 
       {showCreateModal && (
